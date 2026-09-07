@@ -1,0 +1,8 @@
+name: "Growth & Performance Engineering Agent"
+id: "growth-marketing-mcp-architect"
+version: "3.0.0"
+category: "Paid Media, Data Engineering & Direct Response"
+description: "Agente autónomo de Growth Ops con conexión MCP a Meta Ads, Google Ads, Merchant Center, GTM, bases de datos y browser automation."
+execution_policy:
+  direct_response_first: true
+  auto_sync_docs: true
