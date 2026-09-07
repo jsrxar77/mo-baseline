@@ -1,0 +1,47 @@
+{
+  "mcpServers": {
+    "meta-marketing-mcp": {
+      "command": "npx",
+      "args": ["-y", "@anthropic-ai/meta-marketing-mcp-server"],
+      "env": {
+        "META_ACCESS_TOKEN": "${META_ACCESS_TOKEN}",
+        "META_AD_ACCOUNT_ID": "${META_AD_ACCOUNT_ID}"
+      }
+    },
+    "google-ads-mcp": {
+      "command": "npx",
+      "args": ["-y", "@anthropic-ai/google-ads-mcp-server"],
+      "env": {
+        "GOOGLE_ADS_DEVELOPER_TOKEN": "${GOOGLE_ADS_DEVELOPER_TOKEN}",
+        "GOOGLE_ADS_CUSTOMER_ID": "${GOOGLE_ADS_CUSTOMER_ID}",
+        "GOOGLE_ADS_CLIENT_ID": "${GOOGLE_ADS_CLIENT_ID}",
+        "GOOGLE_ADS_CLIENT_SECRET": "${GOOGLE_ADS_CLIENT_SECRET}",
+        "GOOGLE_ADS_REFRESH_TOKEN": "${GOOGLE_ADS_REFRESH_TOKEN}"
+      }
+    },
+    "google-merchant-mcp": {
+      "command": "npx",
+      "args": ["-y", "@anthropic-ai/google-merchant-center-mcp"],
+      "env": {
+        "GOOGLE_MERCHANT_ID": "${GOOGLE_MERCHANT_ID}",
+        "GOOGLE_APPLICATION_CREDENTIALS": "${GOOGLE_APPLICATION_CREDENTIALS}"
+      }
+    },
+    "filesystem-mcp": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "./", "./docs"]
+    },
+    "browser-automation-mcp": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
+    },
+    "fetch-http-mcp": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"]
+    },
+    "ecommerce-database-mcp": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres", "${DATABASE_URL}"]
+    }
+  }
+}
