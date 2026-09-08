@@ -181,17 +181,34 @@ graph LR
 ## 4. CUADRO COMPARATIVO PARA LA TOMA DE DECISIÓN
 
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'quadrant1Fill': '#F8FAFC',
+    'quadrant2Fill': '#F1F5F9',
+    'quadrant3Fill': '#FFFFFF',
+    'quadrant4Fill': '#F1F5F9',
+    'quadrant1TextFill': '#334155',
+    'quadrant2TextFill': '#334155',
+    'quadrant3TextFill': '#94A3B8',
+    'quadrant4TextFill': '#334155',
+    'quadrantPointFill': '#0F172A',
+    'quadrantPointTextFill': '#0F172A',
+    'quadrantXAxisTextFill': '#475569',
+    'quadrantYAxisTextFill': '#475569'
+  }
+}}%%
 quadrantChart
-    title Matriz de Impacto vs Posicionamiento de Marca
-    x-axis "Menor Reconocimiento Inmediato" --> "Reconocimiento Masivo"
-    y-axis "Consumo de Ocasión" --> "Lujo / Coleccionismo"
-    quadrant-1 "Eje 01: The Macallan (Lujo Máximo)"
-    quadrant-2 "Eje 02: Gran Enemigo (Alta Demanda & Prestigio)"
-    quadrant-3 "Licores Estándar (Fuera de Foco)"
-    quadrant-4 "Eje 03: Whiskies Asiáticos (Diferenciación de Nicho)"
-    "The Macallan": [0.85, 0.90]
-    "Gran Enemigo": [0.80, 0.70]
-    "Whiskies Asiáticos": [0.35, 0.85]
+    title Posicionamiento de Marca vs Volumen de Demanda
+    x-axis "Demanda de Nicho" --> "Demanda Masiva"
+    y-axis "Consumo Diario" --> "Colección & Alto Valor"
+    quadrant-1 "Lujo & Prestigio"
+    quadrant-2 "Alta Demanda"
+    quadrant-3 "Licores Masivos"
+    quadrant-4 "Innovación & Nicho"
+    "The Macallan": [0.82, 0.88]
+    "Gran Enemigo": [0.78, 0.65]
+    "Whiskies Asiáticos": [0.28, 0.82]
 ```
 
 | Eje Estratégico | Atractivo Principal | Emoción Dominante | Ticket Promedio (AOV) | Rol en el Mix del Mes 1 |
@@ -207,24 +224,28 @@ quadrantChart
 Una vez elegidas las **2 opciones**, desplegaremos una estructura de tráfico y conversión basada en testing dinámico (DCT) y optimización CBO:
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#1E293B', 'primaryTextColor': '#FFFFFF', 'primaryBorderColor': '#0F172A', 'lineColor': '#64748B', 'secondaryColor': '#334155', 'tertiaryColor': '#F8FAFC' }}}%%
 flowchart TD
-    subgraph META_ADS_MES_1 [Estructura de Campaña Meta Ads - CBO Mes 1]
-        CAMPAIGN[Campaña CBO / Advantage Budget: Conversiones a Compra]
+    subgraph META_ADS_MES_1 ["Estructura de Campaña Meta Ads · CBO Mes 1"]
+        CAMPAIGN["Campaña CBO / Advantage Budget · Conversión Compra"]
         
-        CAMPAIGN --> ADSET1[Conjunto 01: Eje Ganador A - Test Creativo DCT]
-        CAMPAIGN --> ADSET2[Conjunto 02: Eje Ganador B - Test Creativo DCT]
-        CAMPAIGN --> ADSET3[Conjunto 03: Catálogo Dinámico DPA Retargeting]
+        CAMPAIGN --> ADSET1["Adset 01: Eje Ganador A · Test DCT"]
+        CAMPAIGN --> ADSET2["Adset 02: Eje Ganador B · Test DCT"]
+        CAMPAIGN --> ADSET3["Adset 03: DPA Catálogo Dinámico"]
         
-        ADSET1 --> V1[3 Hooks + 2 Bodies + 2 CTAs]
-        ADSET2 --> V2[3 Hooks + 2 Bodies + 2 CTAs]
-        ADSET3 --> V3[Retargeting Carrito Abandonado / 400 Productos]
+        ADSET1 --> V1["3 Hooks + 2 Bodies + 2 CTAs"]
+        ADSET2 --> V2["3 Hooks + 2 Bodies + 2 CTAs"]
+        ADSET3 --> V3["Retargeting Dinámico (400 Productos)"]
     end
     
-    subgraph TIENDA_NUBE [E-Commerce Drink Lovers]
-        V1 --> LANDING_A[Colección / Producto A]
-        V2 --> LANDING_B[Colección / Producto B]
-        V3 --> CHECKOUT[Checkout & Pago]
+    subgraph TIENDA_NUBE ["E-Commerce Drink Lovers"]
+        V1 --> LANDING_A["Colección A"]
+        V2 --> LANDING_B["Colección B"]
+        V3 --> CHECKOUT["Checkout & Conversión"]
     end
+    
+    style META_ADS_MES_1 fill:#F8FAFC,stroke:#94A3B8,stroke-width:1px
+    style TIENDA_NUBE fill:#F1F5F9,stroke:#64748B,stroke-width:1px
 ```
 
 ### Protocolo de Producción (Seguridad de Stock)
@@ -237,19 +258,37 @@ flowchart TD
 ## 6. PRÓXIMOS PASOS (PLAN DE ACCIÓN INMEDIATO)
 
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#334155',
+    'primaryTextColor': '#FFFFFF',
+    'primaryBorderColor': '#1E293B',
+    'lineColor': '#64748B',
+    'sectionBkgColor': '#F8FAFC',
+    'altSectionBkgColor': '#FFFFFF',
+    'gridColor': '#E2E8F0',
+    'todayLineColor': '#94A3B8'
+  }
+}}%%
 gantt
-    title Cronograma de Ejecución - Mes 1
+    title Cronograma de Ejecución · Mes 1
     dateFormat  YYYY-MM-DD
-    section Definición
-    Selección de 2 Ejes por el Cliente     :active, a1, 2026-09-08, 2d
-    section Producción
-    Rodaje y Edición de Reels (30s)        :a2, after a1, 4d
-    Aprobación de Creativos Finales        :a3, after a2, 2d
-    section Lanzamiento
-    Setup de Adsets DCT en Meta Ads        :a4, after a3, 2d
-    Optimización y Escala de Pauta         :a5, after a4, 14d
+    axisFormat  %d-%b
+    
+    section 1. Definición
+    Selección de 2 Ejes por el Cliente :active, a1, 2026-09-08, 2d
+    
+    section 2. Producción
+    Rodaje y Edición de Reels 9:16     :a2, after a1, 4d
+    Revisión y Aprobación Final        :a3, after a2, 2d
+    
+    section 3. Pauta
+    Setup de Campañas y DCT en Meta    :a4, after a3, 2d
+    Optimización y Escala de Ventas    :a5, after a4, 14d
 ```
 
 1. **Tu Definición:** Indicar cuáles son los **2 ejes** seleccionados (Macallan, Gran Enemigo o Whiskies Asiáticos).
 2. **Definición de Variante:** Confirmar si prefieres la versión **Solo Producto** o con **Presencia Humana** para cada uno.
 3. **Plan de Rodaje:** Con la definición tomada, procedemos a la pauta de filmación plano por plano y el posterior montaje publicitario.
+
