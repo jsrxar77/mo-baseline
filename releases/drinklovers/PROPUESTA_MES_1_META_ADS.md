@@ -361,48 +361,6 @@ flowchart TD
 
 ## 6. PRÓXIMOS PASOS (PLAN DE ACCIÓN INMEDIATO)
 
-```mermaid
-%%{init: {
-  'theme': 'base',
-  'gantt': {
-    'titleTopMargin': 15,
-    'barHeight': 18,
-    'barGap': 4,
-    'topPadding': 25,
-    'sidePadding': 20,
-    'fontSize': 10,
-    'sectionFontSize': 11,
-    'axisFormat': '%d/%m'
-  },
-  'themeVariables': {
-    'fontSize': '10px',
-    'primaryColor': '#E2E8F0',
-    'primaryTextColor': '#0F172A',
-    'primaryBorderColor': '#94A3B8',
-    'lineColor': '#64748B',
-    'sectionBkgColor': '#F8FAFC',
-    'altSectionBkgColor': '#FFFFFF',
-    'gridColor': '#E2E8F0',
-    'todayLineColor': '#64748B'
-  },
-  'themeCSS': '.tick text { font-size: 9px !important; fill: #0F172A !important; } .taskText { font-size: 10px !important; fill: #0F172A !important; font-weight: 500; } .taskTextOutsideRight { font-size: 10px !important; fill: #0F172A !important; } .sectionTitle { font-size: 11px !important; font-weight: 600 !important; fill: #0F172A !important; }'
-}}%%
-gantt
-    title Cronograma de Ejecución · Mes 1
-    dateFormat  YYYY-MM-DD
-    axisFormat  %d/%m
-    
-    section 1. Definición
-    Selección de 2 Ejes por el Cliente :active, a1, 2026-09-08, 2d
-    
-    section 2. Producción
-    Rodaje y Edición de Reels 9:16     :a2, after a1, 4d
-    Revisión y Aprobación Final        :a3, after a2, 2d
-    
-    section 3. Pauta
-    Setup de Campañas y DCT en Meta    :a4, after a3, 2d
-    Optimización y Escala de Ventas    :a5, after a4, 14d
-```
 
 1. **Tu Definición:** Indicar cuáles son los **2 ejes** seleccionados (Macallan, Gran Enemigo o Whiskies Asiáticos).
 2. **Definición de Variante:** Confirmar si prefieres la versión **Solo Producto** o con **Presencia Humana** para cada uno.
