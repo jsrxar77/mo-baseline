@@ -7,15 +7,19 @@ Se sincroniza y complementa con [agent.yaml](file:///.agent/agent.yaml), [rules.
 
 ## 1. REGLAS OPERATIVAS OBLIGATORIAS ("LIVING DOCS")
 
-1. **Sincronización Documental Continua:**
-   - Toda alteración en arquitectura, herramientas MCP, skills o pipelines debe reflejarse inmediatamente en `./docs/`:
+1. **Sincronización Documental Continua ("Living Docs" del Agente):**
+   - La carpeta `./docs/` se reserva única y exclusivamente para cambios en la forma en que el `.agent` opera (arquitectura general, herramientas MCP, metodologías globales). No se mezcla información puntual o mensual de clientes aquí.
+   - Toda alteración en arquitectura, herramientas MCP, skills o pipelines del agente debe reflejarse inmediatamente en `./docs/`:
      - [ARCHITECTURE.md](file:///docs/ARCHITECTURE.md): Topología de red, tracking, pipelines CAPI/GTM.
      - [FEATURES.md](file:///docs/FEATURES.md): Herramientas MCP, comandos y skills activas.
-     - [BRIEF.md](file:///docs/BRIEF.md): Objetivos comerciales, KPIs, márgenes y distribución de pauta.
-     - [ROADMAP.md](file:///docs/ROADMAP.md): Hitos completados, backlog y estado de fases.
-   - Ninguna tarea se da por finalizada sin el respectivo commit documental en Git.
+     - [BRIEF.md](file:///docs/BRIEF.md): Objetivos comerciales y métricas financieras globales del agente.
+     - [ROADMAP.md](file:///docs/ROADMAP.md): Hitos completados y backlog del agente.
+   - **Documentación Específica de Clientes:** Todo entregable, propuesta mensual o reporte de un cliente debe residir exclusivamente en `./releases/<cliente>/` (ej: `./releases/drink-lovers/`).
 
-2. **Integridad Técnica y Prohibición de Regresiones:**
+2. **Diagramación Obligatoria con Mermaid:**
+   - Todo diagrama (embudos de conversión, árboles de decisión estratégica, flujos técnicos de datos o topologías) debe modelarse obligatoriamente utilizando bloques de código **Mermaid**.
+
+3. **Integridad Técnica y Prohibición de Regresiones:**
    - Modificaciones 100% aditivas e incrementales. Prohibido reemplazar, truncar, eliminar o degradar código complejo o funcionalidades preexistentes.
    - Proporcionar código production-ready (snippets completos de Data Layer, llamadas CAPI, consultas SQL), nunca pseudocódigo ni marketing genérico.
 
