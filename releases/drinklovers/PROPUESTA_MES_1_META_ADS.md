@@ -18,22 +18,23 @@ El objetivo central del **Mes 1** no es quemar presupuesto publicitario en ofert
 Para lograrlo, transformamos las botellas en **objetos de colección, criterio y deseo**, alejándonos del típico anuncio ruidoso de licorería y adoptando códigos visuales propios de la alta perfumería, relojería suiza y boutiques enológicas de culto.
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2D3748', 'primaryTextColor': '#FFFFFF', 'primaryBorderColor': '#1A202C', 'lineColor': '#718096', 'secondaryColor': '#4A5568', 'tertiaryColor': '#F7FAFC' }}}%%
 graph TD
-    DL[Drink Lovers - Infraestructura Lista] --> OBJ[Objetivo Mes 1: Posicionamiento + Adquisición Rentable]
-    OBJ --> DECISION{Matriz de Decisión: Elegir 2 de 3 Ejes}
+    DL["Drink Lovers · Setup Completo"] --> OBJ["Objetivo Mes 1: Posicionamiento & Ventas Calificadas"]
+    OBJ --> DECISION{"Matriz de Decisión: Seleccionar 2 Ejes"}
     
-    DECISION --> EJE1[Eje 01: The Macallan - El Legado y Exclusividad]
-    DECISION --> EJE2[Eje 02: Gran Enemigo - Terroir y Vino de Culto]
-    DECISION --> EJE3[Eje 03: Whiskies Asiáticos - El Descubrimiento y Vanguardia]
+    DECISION --> EJE1["Eje 01: The Macallan<br/>Legado & Exclusividad"]
+    DECISION --> EJE2["Eje 02: Gran Enemigo<br/>Terroir & Culto"]
+    DECISION --> EJE3["Eje 03: Whiskies Asiáticos<br/>Vanguardia & Descubrimiento"]
     
-    EJE1 --> E1_1[Opción A: Solo Producto / Cinematográfico]
-    EJE1 --> E1_2[Opción B: Presencia Humana / El Ritual de Elección]
+    EJE1 --> E1_1["1.1 Solo Producto"]
+    EJE1 --> E1_2["1.2 Presencia Humana"]
     
-    EJE2 --> E2_1[Opción A: Solo Producto / Objeto de Colección]
-    EJE2 --> E2_2[Opción B: Presencia Humana / El Curador Enológico]
+    EJE2 --> E2_1["2.1 Solo Producto"]
+    EJE2 --> E2_2["2.2 Presencia Humana"]
     
-    EJE3 --> E3_1[Opción A: Solo Producto / Intriga Minimalista]
-    EJE3 --> E3_2[Opción B: Presencia Humana / Romper con lo Habitual]
+    EJE3 --> E3_1["3.1 Solo Producto"]
+    EJE3 --> E3_2["3.2 Presencia Humana"]
 ```
 
 ---
@@ -47,14 +48,16 @@ Diseñamos **3 grandes líneas estratégicas de producto**. Cada una responde a 
 > Una vez elegidos los 2 ejes que mejor representen hacia dónde visualizas llevar a Drink Lovers este mes, definiremos dentro de cada uno cuál de sus **2 variantes de producción** (Solo Producto vs Presencia Humana) ejecutamos en la fase de filmación y testeo dinámico.
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#F7FAFC', 'primaryTextColor': '#1A202C', 'primaryBorderColor': '#4A5568', 'lineColor': '#4A5568' }}}%%
 flowchart LR
-    A[Revisión de los 3 Ejes] --> B[Paso 1: Seleccionar 2 Ejes Principales]
-    B --> C[Paso 2: Definir Variante por Eje - Producto vs Humana]
-    C --> D[Despliegue Técnico y Lanzamiento en Meta Ads]
+    A["1. Revisión de los 3 Ejes"] --> B["2. Selección de 2 Ejes Clave"]
+    B --> C["3. Elección de Variante<br/>(Producto vs Humana)"]
+    C --> D["4. Despliegue en Meta Ads"]
     
-    style B fill:#f9f,stroke:#333,stroke-width:2px
-    style C fill:#bbf,stroke:#333,stroke-width:2px
-    style D fill:#dfd,stroke:#333,stroke-width:2px
+    style A fill:#EDF2F7,stroke:#718096,stroke-width:1px,color:#1A202C
+    style B fill:#E2E8F0,stroke:#4A5568,stroke-width:2px,color:#1A202C
+    style C fill:#CBD5E0,stroke:#2D3748,stroke-width:2px,color:#1A202C
+    style D fill:#2D3748,stroke:#1A202C,stroke-width:2px,color:#FFFFFF
 ```
 
 ---
