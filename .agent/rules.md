@@ -7,3 +7,4 @@
 6. Guiones entregados exclusivamente en formato de tabla de 4 columnas de respuesta directa.
 7. Uso obligatorio de Mermaid para todos los diagramas (flujos, embudos, topología y árboles de decisión).
 8. Separación documental estricta: ./docs solo para cambios operacionales del .agent; toda documentación y propuesta de clientes reside en ./releases/<cliente>/.
+9. Regla de Oro Mermaid: Diagramación homogénea obligatoria en paleta neutra (grises suaves #F8FAFC/#F1F5F9/#E2E8F0, bordes #CBD5E1/#94A3B8, conectores #64748B y texto 100% negro/grafito #0F172A). Prohibidos fondos oscuros, textos blancos o estilos por defecto sin tematizar. En quadrantChart: control tipográfico estricto (quadrantLabelFontSize <= 11px, axis <= 10px). En cronogramas: formato compacto de fecha (axisFormat %d/%m) y fontSize <= 10px vía themeCSS para prevenir fechas y textos gigantes.

@@ -16,8 +16,21 @@ Se sincroniza y complementa con [agent.yaml](file:///.agent/agent.yaml), [rules.
      - [ROADMAP.md](file:///docs/ROADMAP.md): Hitos completados y backlog del agente.
    - **Documentación Específica de Clientes:** Todo entregable, propuesta mensual o reporte de un cliente debe residir exclusivamente en `./releases/<cliente>/` (ej: `./releases/drink-lovers/`).
 
-2. **Diagramación Obligatoria con Mermaid:**
-   - Todo diagrama (embudos de conversión, árboles de decisión estratégica, flujos técnicos de datos o topologías) debe modelarse obligatoriamente utilizando bloques de código **Mermaid**.
+2. **Regla de Oro Mermaid: Estilizado, Paleta y Control Tipográfico:**
+   - **Diagramación Obligatoria con Mermaid:** Todo diagrama (embudos de conversión, árboles de decisión estratégica, flujos técnicos de datos o topologías) debe modelarse obligatoriamente utilizando bloques de código **Mermaid**.
+   - **Paleta Cromática Universal (Grises Suaves + Texto en Negro):**
+     * **Fondo de Nodos y Subgrafos:** Exclusivamente escala de grises suaves (`#F8FAFC`, `#F1F5F9`, `#E2E8F0`).
+     * **Bordes y Delimitadores:** Slate neutro (`#CBD5E1`, `#94A3B8`).
+     * **Conectores y Flechas:** Slate medio (`#64748B`).
+     * **Tipografía:** Siempre en negro / grafito oscuro (`#0F172A` o `#000000`). **Prohibido terminantemente** utilizar fondos oscuros con texto blanco o dejar diagramas con la paleta por defecto sin inicializar.
+   - **Control de Escala en Cuadrantes (`quadrantChart`):**
+     * Configurar obligatoriamente en el bloque `init`: `quadrantLabelFontSize: 11`, `xAxisLabelFontSize: 10`, `yAxisLabelFontSize: 10`, `titleFontSize: 13`, `pointLabelFontSize: 11`.
+     * Inyectar `themeCSS` (`text { font-size: 11px !important; fill: #0F172A !important; }`) para impedir que el renderizador agrande desproporcionadamente las etiquetas.
+   - **Control en Diagramas Temporales (`gantt`):**
+     * En caso de usarse, limitar escala en `init`: `fontSize: 10`, `sectionFontSize: 11`, `barHeight: 18`.
+     * Formato de fecha compacto: `axisFormat %d/%m` (nunca nombres de mes largos desbordados).
+     * Inyección obligatoria de `themeCSS`: `.tick text { font-size: 9px !important; fill: #0F172A !important; }` para evitar fechas gigantes en el eje SVG. Para cronogramas ejecutivos simples, priorizar tablas Markdown limpias.
+   - **Homogeneidad Total:** Todo documento debe inicializar el 100% de sus diagramas con el bloque `%%{init: {...}}%%` correspondiente.
 
 3. **Integridad Técnica y Prohibición de Regresiones:**
    - Modificaciones 100% aditivas e incrementales. Prohibido reemplazar, truncar, eliminar o degradar código complejo o funcionalidades preexistentes.
