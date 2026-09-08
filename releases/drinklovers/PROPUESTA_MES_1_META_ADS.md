@@ -18,7 +18,24 @@ El objetivo central del **Mes 1** no es quemar presupuesto publicitario en ofert
 Para lograrlo, transformamos las botellas en **objetos de colección, criterio y deseo**, alejándonos del típico anuncio ruidoso de licorería y adoptando códigos visuales propios de la alta perfumería, relojería suiza y boutiques enológicas de culto.
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2D3748', 'primaryTextColor': '#FFFFFF', 'primaryBorderColor': '#1A202C', 'lineColor': '#718096', 'secondaryColor': '#4A5568', 'tertiaryColor': '#F7FAFC' }}}%%
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#F1F5F9',
+    'primaryTextColor': '#0F172A',
+    'primaryBorderColor': '#94A3B8',
+    'lineColor': '#64748B',
+    'secondaryColor': '#E2E8F0',
+    'secondaryTextColor': '#0F172A',
+    'secondaryBorderColor': '#94A3B8',
+    'tertiaryColor': '#F8FAFC',
+    'tertiaryTextColor': '#0F172A',
+    'tertiaryBorderColor': '#CBD5E1',
+    'fontFamily': 'system-ui, -apple-system, sans-serif',
+    'fontSize': '12px'
+  },
+  'themeCSS': 'text { fill: #0F172A !important; font-family: system-ui, -apple-system, sans-serif !important; } .node rect, .node polygon { fill: #F1F5F9 !important; stroke: #94A3B8 !important; }'
+}}%%
 graph TD
     DL["Drink Lovers · Setup Completo"] --> OBJ["Objetivo Mes 1: Posicionamiento & Ventas Calificadas"]
     OBJ --> DECISION{"Matriz de Decisión: Seleccionar 2 Ejes"}
@@ -48,16 +65,27 @@ Diseñamos **3 grandes líneas estratégicas de producto**. Cada una responde a 
 > Una vez elegidos los 2 ejes que mejor representen hacia dónde visualizas llevar a Drink Lovers este mes, definiremos dentro de cada uno cuál de sus **2 variantes de producción** (Solo Producto vs Presencia Humana) ejecutamos en la fase de filmación y testeo dinámico.
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#F7FAFC', 'primaryTextColor': '#1A202C', 'primaryBorderColor': '#4A5568', 'lineColor': '#4A5568' }}}%%
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#F1F5F9',
+    'primaryTextColor': '#0F172A',
+    'primaryBorderColor': '#94A3B8',
+    'lineColor': '#64748B',
+    'fontFamily': 'system-ui, -apple-system, sans-serif',
+    'fontSize': '12px'
+  },
+  'themeCSS': 'text { fill: #0F172A !important; font-family: system-ui, -apple-system, sans-serif !important; }'
+}}%%
 flowchart LR
     A["1. Revisión de los 3 Ejes"] --> B["2. Selección de 2 Ejes Clave"]
     B --> C["3. Elección de Variante<br/>(Producto vs Humana)"]
     C --> D["4. Despliegue en Meta Ads"]
     
-    style A fill:#EDF2F7,stroke:#718096,stroke-width:1px,color:#1A202C
-    style B fill:#E2E8F0,stroke:#4A5568,stroke-width:2px,color:#1A202C
-    style C fill:#CBD5E0,stroke:#2D3748,stroke-width:2px,color:#1A202C
-    style D fill:#2D3748,stroke:#1A202C,stroke-width:2px,color:#FFFFFF
+    style A fill:#F8FAFC,stroke:#CBD5E1,stroke-width:1px,color:#0F172A
+    style B fill:#F1F5F9,stroke:#94A3B8,stroke-width:1.5px,color:#0F172A
+    style C fill:#E2E8F0,stroke:#64748B,stroke-width:1.5px,color:#0F172A
+    style D fill:#CBD5E1,stroke:#475569,stroke-width:1.5px,color:#0F172A
 ```
 
 ---
@@ -73,10 +101,25 @@ flowchart LR
 * **Tesis Comercial:** Posiciona a Drink Lovers como la tienda de referencia indiscutida para adquirir el whisky más prestigioso del mundo, justificando tickets promedio muy elevados.
 
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#F1F5F9',
+    'primaryTextColor': '#0F172A',
+    'primaryBorderColor': '#94A3B8',
+    'lineColor': '#64748B',
+    'clusterBkg': '#F8FAFC',
+    'clusterBorder': '#CBD5E1',
+    'edgeLabelBackground': '#FFFFFF',
+    'fontFamily': 'system-ui, -apple-system, sans-serif',
+    'fontSize': '12px'
+  },
+  'themeCSS': 'text { fill: #0F172A !important; font-family: system-ui, -apple-system, sans-serif !important; } .node rect { fill: #F1F5F9 !important; stroke: #94A3B8 !important; } .cluster rect { fill: #F8FAFC !important; stroke: #CBD5E1 !important; }'
+}}%%
 graph LR
     subgraph Eje 01: The Macallan
-        M1[Opción 1.1: Solo Producto] -->|Foco| P1[Cinematográfico / Macro / Luz y Vidrio]
-        M2[Opción 1.2: Presencia Humana] -->|Foco| P2[Ritual de Elección / Criterio de Compra]
+        M1["Opción 1.1: Solo Producto"] -->|Foco| P1["Cinematográfico / Macro / Luz y Vidrio"]
+        M2["Opción 1.2: Presencia Humana"] -->|Foco| P2["Ritual de Elección / Criterio de Compra"]
     end
 ```
 
@@ -110,10 +153,25 @@ graph LR
 * **Tesis Comercial:** Aprovecha el reconocimiento masivo de Gran Enemigo (Catena Zapata) para captar volumen calificado con excelente margen bruto, demostrando que Drink Lovers tiene stock de añadas difíciles de conseguir.
 
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#F1F5F9',
+    'primaryTextColor': '#0F172A',
+    'primaryBorderColor': '#94A3B8',
+    'lineColor': '#64748B',
+    'clusterBkg': '#F8FAFC',
+    'clusterBorder': '#CBD5E1',
+    'edgeLabelBackground': '#FFFFFF',
+    'fontFamily': 'system-ui, -apple-system, sans-serif',
+    'fontSize': '12px'
+  },
+  'themeCSS': 'text { fill: #0F172A !important; font-family: system-ui, -apple-system, sans-serif !important; } .node rect { fill: #F1F5F9 !important; stroke: #94A3B8 !important; } .cluster rect { fill: #F8FAFC !important; stroke: #CBD5E1 !important; }'
+}}%%
 graph LR
     subgraph Eje 02: Gran Enemigo
-        GE1[Opción 2.1: Solo Producto] -->|Foco| GP1[Objeto de Colección / Texturas Naturales]
-        GE2[Opción 2.2: Presencia Humana] -->|Foco| GP2[El Curador / Elección con Historia]
+        GE1["Opción 2.1: Solo Producto"] -->|Foco| GP1["Objeto de Colección / Texturas Naturales"]
+        GE2["Opción 2.2: Presencia Humana"] -->|Foco| GP2["El Curador / Elección con Historia"]
     end
 ```
 
@@ -148,10 +206,25 @@ graph LR
 * **Tesis Comercial:** Posicionamiento disruptivo. Despega a Drink Lovers del 99% de las vinotecas tradicionales que solo promocionan marcas masivas, atrayendo a un público exigente que paga por novedad y exclusividad.
 
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#F1F5F9',
+    'primaryTextColor': '#0F172A',
+    'primaryBorderColor': '#94A3B8',
+    'lineColor': '#64748B',
+    'clusterBkg': '#F8FAFC',
+    'clusterBorder': '#CBD5E1',
+    'edgeLabelBackground': '#FFFFFF',
+    'fontFamily': 'system-ui, -apple-system, sans-serif',
+    'fontSize': '12px'
+  },
+  'themeCSS': 'text { fill: #0F172A !important; font-family: system-ui, -apple-system, sans-serif !important; } .node rect { fill: #F1F5F9 !important; stroke: #94A3B8 !important; } .cluster rect { fill: #F8FAFC !important; stroke: #CBD5E1 !important; }'
+}}%%
 graph LR
     subgraph Eje 03: Whiskies Asiáticos
-        WA1[Opción 3.1: Solo Producto] -->|Foco| WP1[Intriga / El Detalle Cambia Todo]
-        WA2[Opción 3.2: Presencia Humana] -->|Foco| WP2[Salirse de lo Habitual / Descubrimiento]
+        WA1["Opción 3.1: Solo Producto"] -->|Foco| WP1["Intriga / El Detalle Cambia Todo"]
+        WA2["Opción 3.2: Presencia Humana"] -->|Foco| WP2["Salirse de lo Habitual / Descubrimiento"]
     end
 ```
 
@@ -183,20 +256,32 @@ graph LR
 ```mermaid
 %%{init: {
   'theme': 'base',
+  'quadrantChart': {
+    'chartWidth': 500,
+    'chartHeight': 420,
+    'titleFontSize': 13,
+    'quadrantLabelFontSize': 11,
+    'xAxisLabelFontSize': 10,
+    'yAxisLabelFontSize': 10,
+    'pointLabelFontSize': 11
+  },
   'themeVariables': {
     'quadrant1Fill': '#F8FAFC',
     'quadrant2Fill': '#F1F5F9',
     'quadrant3Fill': '#FFFFFF',
     'quadrant4Fill': '#F1F5F9',
-    'quadrant1TextFill': '#334155',
-    'quadrant2TextFill': '#334155',
-    'quadrant3TextFill': '#94A3B8',
-    'quadrant4TextFill': '#334155',
+    'quadrant1TextFill': '#0F172A',
+    'quadrant2TextFill': '#0F172A',
+    'quadrant3TextFill': '#0F172A',
+    'quadrant4TextFill': '#0F172A',
     'quadrantPointFill': '#0F172A',
     'quadrantPointTextFill': '#0F172A',
-    'quadrantXAxisTextFill': '#475569',
-    'quadrantYAxisTextFill': '#475569'
-  }
+    'quadrantXAxisTextFill': '#0F172A',
+    'quadrantYAxisTextFill': '#0F172A',
+    'quadrantInternalBorderStrokeFill': '#CBD5E1',
+    'quadrantExternalBorderStrokeFill': '#94A3B8'
+  },
+  'themeCSS': 'text { font-size: 11px !important; fill: #0F172A !important; font-family: system-ui, -apple-system, sans-serif !important; } .quadrant-label { font-size: 11px !important; fill: #0F172A !important; font-weight: 600; } .quadrant-title { font-size: 13px !important; fill: #0F172A !important; font-weight: bold; }'
 }}%%
 quadrantChart
     title Posicionamiento de Marca vs Volumen de Demanda
@@ -224,7 +309,26 @@ quadrantChart
 Una vez elegidas las **2 opciones**, desplegaremos una estructura de tráfico y conversión basada en testing dinámico (DCT) y optimización CBO:
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#1E293B', 'primaryTextColor': '#FFFFFF', 'primaryBorderColor': '#0F172A', 'lineColor': '#64748B', 'secondaryColor': '#334155', 'tertiaryColor': '#F8FAFC' }}}%%
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#F1F5F9',
+    'primaryTextColor': '#0F172A',
+    'primaryBorderColor': '#94A3B8',
+    'lineColor': '#64748B',
+    'secondaryColor': '#E2E8F0',
+    'secondaryTextColor': '#0F172A',
+    'secondaryBorderColor': '#94A3B8',
+    'tertiaryColor': '#F8FAFC',
+    'tertiaryTextColor': '#0F172A',
+    'tertiaryBorderColor': '#CBD5E1',
+    'clusterBkg': '#F8FAFC',
+    'clusterBorder': '#CBD5E1',
+    'fontFamily': 'system-ui, -apple-system, sans-serif',
+    'fontSize': '12px'
+  },
+  'themeCSS': 'text { fill: #0F172A !important; font-family: system-ui, -apple-system, sans-serif !important; } .node rect { fill: #F1F5F9 !important; stroke: #94A3B8 !important; } .cluster rect { fill: #F8FAFC !important; stroke: #CBD5E1 !important; }'
+}}%%
 flowchart TD
     subgraph META_ADS_MES_1 ["Estructura de Campaña Meta Ads · CBO Mes 1"]
         CAMPAIGN["Campaña CBO / Advantage Budget · Conversión Compra"]
@@ -260,21 +364,33 @@ flowchart TD
 ```mermaid
 %%{init: {
   'theme': 'base',
+  'gantt': {
+    'titleTopMargin': 15,
+    'barHeight': 18,
+    'barGap': 4,
+    'topPadding': 25,
+    'sidePadding': 20,
+    'fontSize': 10,
+    'sectionFontSize': 11,
+    'axisFormat': '%d/%m'
+  },
   'themeVariables': {
-    'primaryColor': '#334155',
-    'primaryTextColor': '#FFFFFF',
-    'primaryBorderColor': '#1E293B',
+    'fontSize': '10px',
+    'primaryColor': '#E2E8F0',
+    'primaryTextColor': '#0F172A',
+    'primaryBorderColor': '#94A3B8',
     'lineColor': '#64748B',
     'sectionBkgColor': '#F8FAFC',
     'altSectionBkgColor': '#FFFFFF',
     'gridColor': '#E2E8F0',
-    'todayLineColor': '#94A3B8'
-  }
+    'todayLineColor': '#64748B'
+  },
+  'themeCSS': '.tick text { font-size: 9px !important; fill: #0F172A !important; } .taskText { font-size: 10px !important; fill: #0F172A !important; font-weight: 500; } .taskTextOutsideRight { font-size: 10px !important; fill: #0F172A !important; } .sectionTitle { font-size: 11px !important; font-weight: 600 !important; fill: #0F172A !important; }'
 }}%%
 gantt
     title Cronograma de Ejecución · Mes 1
     dateFormat  YYYY-MM-DD
-    axisFormat  %d-%b
+    axisFormat  %d/%m
     
     section 1. Definición
     Selección de 2 Ejes por el Cliente :active, a1, 2026-09-08, 2d
