@@ -11,7 +11,8 @@
 - [ ] Script de automatización de custom_labels en Google Merchant Center.
 - [ ] Monitoreo automatizado de desaprobaciones de productos.
 
-### Fase 3: Escala de Pauta y Contenido (Pendiente)
+### Fase 3: Escala de Pauta y Contenido (En Progreso)
+- [x] Suite Web local (Creative Studio en `tools/creative-studio/`) para guiones DCT con Google AI y renderizado vertical 9:16 sin costos de suscripción.
 - [ ] Reglas automáticas para pausar creativos con Thumbstop Rate < 25%.
 - [ ] Segmentación de Google Ads PMax exclusiva para productos `HIGH_MARGIN`.
 - [ ] Generación masiva de guiones por arquetipo (UGC, Problema-Solución, Quiebre de Mito).

@@ -1,0 +1,310 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+/* ============================================================ */
+/* HOLO STUDIO — CENTRALIZED THEME SYSTEM                       */
+/* ============================================================ */
+
+:root {
+  --theme-bg: #121317;
+  --theme-card-bg: #181825;
+  --theme-card-border: #313244;
+  --theme-header-bg: #11111B;
+  --theme-header-border: #313244;
+  --theme-text-main: #F8F8F2;
+  --theme-text-muted: #A6ADC8;
+  --theme-accent-primary: #A6E3A1;
+  --theme-accent-primary-text: #11111B;
+  --theme-accent-secondary: #CBA6F7;
+  --theme-accent-amber: #F1FA8C;
+  --theme-accent-red: #F1FA8C; /* En Omarchy el rojo está prohibido */
+  --theme-accent-emerald: #A6DA95;
+  --theme-font: 'JetBrains Mono', monospace;
+  --theme-font-mono: 'JetBrains Mono', monospace;
+  --theme-radius-card: 4px;
+  --theme-radius-btn: 4px;
+  --theme-radius-badge: 4px;
+  --theme-radius-input: 4px;
+  --theme-border-width: 1px;
+  --theme-backdrop-filter: none;
+  --theme-box-shadow: none;
+}
+
+/* 1. THEME: OMARCHY TILING (Default Pure 4px Square Tiling - CERO ROJO) */
+html.theme-omarchy_tiling,
+body.theme-omarchy_tiling {
+  --theme-bg: #121317;
+  --theme-card-bg: #181825;
+  --theme-card-border: #313244;
+  --theme-header-bg: #11111B;
+  --theme-header-border: #313244;
+  --theme-text-main: #F8F8F2;
+  --theme-text-muted: #A6ADC8;
+  --theme-accent-primary: #A6E3A1;
+  --theme-accent-primary-text: #11111B;
+  --theme-accent-secondary: #CBA6F7;
+  --theme-accent-amber: #F1FA8C;
+  --theme-accent-red: #F1FA8C; /* Prohibido rojo en Omarchy */
+  --theme-accent-emerald: #A6DA95;
+  --theme-font: 'JetBrains Mono', monospace;
+  --theme-font-mono: 'JetBrains Mono', monospace;
+  --theme-radius-card: 4px;
+  --theme-radius-btn: 4px;
+  --theme-radius-badge: 4px;
+  --theme-radius-input: 4px;
+  --theme-border-width: 1px;
+  --theme-backdrop-filter: none;
+  --theme-box-shadow: none;
+  background-color: var(--theme-bg) !important;
+  color: var(--theme-text-main) !important;
+  font-family: var(--theme-font) !important;
+}
+
+body.theme-omarchy_tiling,
+body.theme-omarchy_tiling *,
+body.theme-omarchy_tiling *:before,
+body.theme-omarchy_tiling *:after {
+  font-family: 'JetBrains Mono', monospace !important;
+  border-radius: 4px !important;
+}
+
+/* 2. THEME: OMARCHY AETHERIAL (CERO ROJO) */
+html.theme-omarchy_aetheria,
+body.theme-omarchy_aetheria {
+  --theme-bg: #0E091D;
+  --theme-card-bg: #170F2E;
+  --theme-card-border: #3D256D;
+  --theme-header-bg: #170F2E;
+  --theme-header-border: #3D256D;
+  --theme-text-main: #F3EEFF;
+  --theme-text-muted: #9D8BBF;
+  --theme-accent-primary: #14B9B5;
+  --theme-accent-primary-text: #0E091D;
+  --theme-accent-secondary: #7C3AED;
+  --theme-accent-amber: #FBBF24;
+  --theme-accent-red: #FBBF24; /* Prohibido rojo en Omarchy */
+  --theme-accent-emerald: #14B9B5;
+  --theme-font: 'JetBrains Mono', monospace;
+  --theme-font-mono: 'JetBrains Mono', monospace;
+  --theme-radius-card: 4px;
+  --theme-radius-btn: 4px;
+  --theme-radius-badge: 4px;
+  --theme-radius-input: 4px;
+  --theme-border-width: 1px;
+  --theme-backdrop-filter: none;
+  --theme-box-shadow: none;
+  background-color: var(--theme-bg) !important;
+  color: var(--theme-text-main) !important;
+  font-family: var(--theme-font) !important;
+}
+
+body.theme-omarchy_aetheria,
+body.theme-omarchy_aetheria * {
+  font-family: 'JetBrains Mono', monospace !important;
+  border-radius: 4px !important;
+}
+
+/* 3. THEME: SOFT PASTEL (Catppuccin inspired) */
+html.theme-soft_minimal_pastel,
+body.theme-soft_minimal_pastel {
+  --theme-bg: #1E1E2E;
+  --theme-card-bg: #252538;
+  --theme-card-border: #36364F;
+  --theme-header-bg: #181825;
+  --theme-header-border: #313244;
+  --theme-text-main: #CDD6F4;
+  --theme-text-muted: #7F849C;
+  --theme-accent-primary: #89B4FA;
+  --theme-accent-primary-text: #1E1E2E;
+  --theme-accent-secondary: #CBA6F7;
+  --theme-accent-amber: #F9E2AF;
+  --theme-accent-red: #F38BA8;
+  --theme-accent-emerald: #A6E3A1;
+  --theme-font: 'Plus Jakarta Sans', sans-serif;
+  --theme-font-mono: 'JetBrains Mono', monospace;
+  --theme-radius-card: 16px;
+  --theme-radius-btn: 12px;
+  --theme-radius-badge: 8px;
+  --theme-radius-input: 12px;
+  --theme-border-width: 1px;
+  --theme-backdrop-filter: none;
+  --theme-box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  background-color: var(--theme-bg) !important;
+  color: var(--theme-text-main) !important;
+  font-family: var(--theme-font) !important;
+}
+
+body.theme-soft_minimal_pastel * {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+/* 4. THEME: DARK GLASSMORPHISM */
+html.theme-dark_glassmorphism,
+body.theme-dark_glassmorphism {
+  --theme-bg: #0B0E14;
+  --theme-card-bg: rgba(18, 24, 38, 0.65);
+  --theme-card-border: rgba(255, 255, 255, 0.12);
+  --theme-header-bg: rgba(11, 14, 20, 0.75);
+  --theme-header-border: rgba(255, 255, 255, 0.08);
+  --theme-text-main: #FFFFFF;
+  --theme-text-muted: #8B949E;
+  --theme-accent-primary: #3B82F6;
+  --theme-accent-primary-text: #FFFFFF;
+  --theme-accent-secondary: #8B5CF6;
+  --theme-accent-amber: #F59E0B;
+  --theme-accent-red: #FF5252;
+  --theme-accent-emerald: #00E676;
+  --theme-font: 'Outfit', sans-serif;
+  --theme-font-mono: 'JetBrains Mono', monospace;
+  --theme-radius-card: 24px;
+  --theme-radius-btn: 14px;
+  --theme-radius-badge: 10px;
+  --theme-radius-input: 14px;
+  --theme-border-width: 1px;
+  --theme-backdrop-filter: blur(20px);
+  --theme-box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+  background-color: var(--theme-bg) !important;
+  color: var(--theme-text-main) !important;
+  font-family: var(--theme-font) !important;
+}
+
+body.theme-dark_glassmorphism * {
+  font-family: 'Outfit', sans-serif !important;
+}
+
+/* 5. THEME: CYBERPUNK GLASS */
+html.theme-cyberpunk_glassmorphism,
+body.theme-cyberpunk_glassmorphism {
+  --theme-bg: #05050A;
+  --theme-card-bg: rgba(20, 10, 35, 0.85);
+  --theme-card-border: rgba(255, 0, 127, 0.45);
+  --theme-header-bg: rgba(10, 5, 20, 0.85);
+  --theme-header-border: rgba(255, 0, 127, 0.35);
+  --theme-text-main: #FFFFFF;
+  --theme-text-muted: #A0A0B0;
+  --theme-accent-primary: #FF007F;
+  --theme-accent-primary-text: #FFFFFF;
+  --theme-accent-secondary: #9D00FF;
+  --theme-accent-amber: #FFE600;
+  --theme-accent-red: #FF003C;
+  --theme-accent-emerald: #00FFCC;
+  --theme-font: 'Outfit', sans-serif;
+  --theme-font-mono: 'JetBrains Mono', monospace;
+  --theme-radius-card: 8px;
+  --theme-radius-btn: 6px;
+  --theme-radius-badge: 4px;
+  --theme-radius-input: 6px;
+  --theme-border-width: 2px;
+  --theme-backdrop-filter: blur(16px);
+  --theme-box-shadow: 0 0 25px rgba(255, 0, 127, 0.25);
+  background-color: var(--theme-bg) !important;
+  color: var(--theme-text-main) !important;
+  font-family: var(--theme-font) !important;
+}
+
+body.theme-cyberpunk_glassmorphism * {
+  font-family: 'Outfit', sans-serif !important;
+}
+
+/* ============================================================ */
+/* UNIVERSAL SEMANTIC THEME UTILITY CLASSES                     */
+/* ============================================================ */
+
+.theme-card {
+  background-color: var(--theme-card-bg) !important;
+  border: var(--theme-border-width) solid var(--theme-card-border) !important;
+  border-radius: var(--theme-radius-card) !important;
+  backdrop-filter: var(--theme-backdrop-filter) !important;
+  -webkit-backdrop-filter: var(--theme-backdrop-filter) !important;
+  box-shadow: var(--theme-box-shadow) !important;
+  color: var(--theme-text-main) !important;
+}
+
+.theme-header {
+  background-color: var(--theme-header-bg) !important;
+  border-bottom: var(--theme-border-width) solid var(--theme-header-border) !important;
+  backdrop-filter: var(--theme-backdrop-filter) !important;
+  -webkit-backdrop-filter: var(--theme-backdrop-filter) !important;
+}
+
+.theme-btn-primary {
+  background-color: var(--theme-accent-primary) !important;
+  color: var(--theme-accent-primary-text) !important;
+  border: var(--theme-border-width) solid var(--theme-accent-primary) !important;
+  border-radius: var(--theme-radius-btn) !important;
+  font-weight: 700 !important;
+  transition: all 0.2s ease-in-out;
+}
+
+.theme-btn-primary:hover {
+  opacity: 0.9;
+  filter: brightness(1.1);
+}
+
+.theme-btn-secondary {
+  background-color: var(--theme-card-bg) !important;
+  color: var(--theme-text-main) !important;
+  border: var(--theme-border-width) solid var(--theme-card-border) !important;
+  border-radius: var(--theme-radius-btn) !important;
+  font-weight: 600 !important;
+}
+
+.theme-btn-secondary:hover {
+  border-color: var(--theme-accent-secondary) !important;
+  color: var(--theme-accent-secondary) !important;
+}
+
+.theme-badge-primary {
+  background-color: rgba(166, 227, 161, 0.15) !important;
+  border: 1px solid var(--theme-accent-emerald) !important;
+  color: var(--theme-accent-emerald) !important;
+  border-radius: var(--theme-radius-badge) !important;
+  font-weight: 700 !important;
+}
+
+.theme-badge-secondary {
+  background-color: rgba(203, 166, 247, 0.15) !important;
+  border: 1px solid var(--theme-accent-secondary) !important;
+  color: var(--theme-accent-secondary) !important;
+  border-radius: var(--theme-radius-badge) !important;
+  font-weight: 700 !important;
+}
+
+.theme-badge-ctrl {
+  background-color: var(--theme-card-bg) !important;
+  border: var(--theme-border-width) solid var(--theme-card-border) !important;
+  color: var(--theme-text-main) !important;
+  border-radius: var(--theme-radius-badge) !important;
+}
+
+.theme-input {
+  background-color: var(--theme-card-bg) !important;
+  border: var(--theme-border-width) solid var(--theme-card-border) !important;
+  border-radius: var(--theme-radius-input) !important;
+  color: var(--theme-text-main) !important;
+}
+
+.theme-input:focus-within {
+  border-color: var(--theme-accent-secondary) !important;
+}
+
+.theme-text-accent {
+  color: var(--theme-accent-secondary) !important;
+}
+
+.theme-text-emerald {
+  color: var(--theme-accent-emerald) !important;
+}
+
+.theme-text-amber {
+  color: var(--theme-accent-amber) !important;
+}
+
+.theme-text-muted {
+  color: var(--theme-text-muted) !important;
+}
+
+.theme-drawer {
+  background-color: var(--theme-card-bg) !important;
+  border-left: 1px solid var(--theme-card-border) !important;
+  box-shadow: -20px 0 60px rgba(0, 0, 0, 0.6) !important;
+}

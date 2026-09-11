@@ -17,6 +17,7 @@
 
 ### 4. Creativos y Documentación Visual
 * `creative:generate-script`: Producción de guiones técnicos en matriz de 4 columnas.
+* `creative:holo-studio`: Suite Web local Next.js 14 / React 18 / Tailwind CSS (`apps/holo-studio/`, ejecutable vía `bin/holo-studio.sh`) con Google AI, Drawer lateral derecho, temas canónicos (Omarchy Tiling sin rojo), síntesis vocal neuronal y renderizado vertical 9:16.
 * `diagram:mermaid-standard`: Generación homogénea de diagramas en grises suaves (#F8FAFC/#F1F5F9/#E2E8F0), bordes slate y tipografía 100% negra (#0F172A), con escala estricta en cuadrantes (fontSize <= 11px) y ejes temporales.
 * **Skill Activa:** `direct-response-ads` (`.agent/skills/direct-response-ads/SKILL.md`).
 
