@@ -31,8 +31,21 @@ export default function HoloStudioPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Configuracion de API y Modelos
+  const [aiProvider, setAiProvider] = useState<"google" | "openrouter">("google");
   const [apiKey, setApiKey] = useState(process.env.NEXT_PUBLIC_GEMINI_API_KEY || "");
+  const [openRouterApiKey, setOpenRouterApiKey] = useState(
+    process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || ""
+  );
   const [llmModel, setLlmModel] = useState("gemini-3.6-flash");
+
+  const handleAiProviderChange = (newProvider: "google" | "openrouter") => {
+    setAiProvider(newProvider);
+    if (newProvider === "openrouter" && !llmModel.includes("/")) {
+      setLlmModel("openrouter/auto");
+    } else if (newProvider === "google" && (llmModel.includes("/") || llmModel.includes(":free"))) {
+      setLlmModel("gemini-3.6-flash");
+    }
+  };
 
   // Presets y ángulos cargados desde API
   const [allPresets, setAllPresets] = useState<Preset[]>([]);
@@ -146,7 +159,9 @@ export default function HoloStudioPage() {
           unique_mechanism: uniqueMechanism,
           offer_or_cta: offerCta,
           angle,
+          provider: aiProvider,
           api_key: apiKey,
+          openrouter_api_key: openRouterApiKey,
           model: llmModel,
         }),
       });
@@ -179,6 +194,10 @@ export default function HoloStudioPage() {
         onApiKeyChange={setApiKey}
         llmModel={llmModel}
         onLlmModelChange={setLlmModel}
+        aiProvider={aiProvider}
+        onAiProviderChange={handleAiProviderChange}
+        openRouterApiKey={openRouterApiKey}
+        onOpenRouterApiKeyChange={setOpenRouterApiKey}
       />
 
       {/* ── HEADER SUPERIOR FORSEE CON HAMBURGUESA A LA DERECHA ── */}

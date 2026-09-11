@@ -1,5 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 
+function extractAndParseJson(text: string): any {
+  let cleaned = text.trim();
+  // Remover etiquetas de razonamiento de modelos como DeepSeek R1 (<think>...</think>)
+  cleaned = cleaned.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+  // Quitar bloques markdown si el modelo los incluyó
+  if (cleaned.startsWith("```")) {
+    cleaned = cleaned.replace(/^```(?:json)?\s*/i, "");
+    cleaned = cleaned.replace(/\s*```$/i, "");
+    cleaned = cleaned.trim();
+  }
+  // Localizar el objeto JSON exterior { ... }
+  const firstBrace = cleaned.indexOf("{");
+  const lastBrace = cleaned.lastIndexOf("}");
+  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+    cleaned = cleaned.substring(firstBrace, lastBrace + 1);
+  }
+  return JSON.parse(cleaned);
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -11,26 +30,17 @@ export async function POST(req: NextRequest) {
       unique_mechanism,
       offer_or_cta,
       angle = "problem_agitation",
+      provider: clientProvider,
       api_key: clientApiKey,
-      model = "gemini-1.5-flash",
+      openrouter_api_key: clientOpenRouterKey,
+      model = "gemini-3.6-flash",
     } = body;
 
-    const apiKey =
-      clientApiKey && clientApiKey.trim().length > 0
-        ? clientApiKey.trim()
-        : process.env.GEMINI_API_KEY ||
-          process.env.GOOGLE_API_KEY ||
-          process.env.NEXT_PUBLIC_GEMINI_API_KEY ||
-          "";
-
-    if (!apiKey) {
-      return NextResponse.json(
-        {
-          error: "API Key de Google AI no configurada. Ingrésala en el Navigation Drawer (menú superior derecho).",
-        },
-        { status: 400 }
-      );
-    }
+    // Detectar si se debe usar OpenRouter o Google AI Studio
+    const isExplicitOpenRouter =
+      clientProvider === "openrouter" ||
+      (typeof model === "string" && (model.includes("/") || model.includes(":free")));
+    const activeProvider = isExplicitOpenRouter ? "openrouter" : "google";
 
     const systemInstruction = `
 Eres el Director Creativo de Performance y Copywriting de Respuesta Directa más prestigioso del mundo para e-commerce (TikTok Ads y Meta Reels).
@@ -135,6 +145,92 @@ El JSON debe tener la siguiente estructura exacta:
 }
 `;
 
+    // ─────────────────────────────────────────────────────────────
+    // RAMA A: OPENROUTER (Modelos Gratuitos :free y Auto Router)
+    // ─────────────────────────────────────────────────────────────
+    if (activeProvider === "openrouter") {
+      const openRouterKey =
+        (clientOpenRouterKey && clientOpenRouterKey.trim().length > 0
+          ? clientOpenRouterKey.trim()
+          : "") ||
+        (clientApiKey && clientApiKey.startsWith("sk-or-") ? clientApiKey.trim() : "") ||
+        process.env.OPENROUTER_API_KEY ||
+        process.env.NEXT_PUBLIC_OPENROUTER_API_KEY ||
+        "";
+
+      if (!openRouterKey) {
+        return NextResponse.json(
+          {
+            error:
+              "API Key de OpenRouter no configurada. Ingrésala en el Navigation Drawer (menú superior derecho) o regístrate gratis en openrouter.ai/keys.",
+          },
+          { status: 400 }
+        );
+      }
+
+      const activeModel = model || "openrouter/auto";
+
+      const openRouterResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${openRouterKey}`,
+          "HTTP-Referer": "http://localhost:3000",
+          "X-Title": "Holo Studio Direct Response",
+        },
+        body: JSON.stringify({
+          model: activeModel,
+          messages: [
+            { role: "system", content: systemInstruction },
+            { role: "user", content: userPrompt },
+          ],
+          temperature: 0.7,
+        }),
+      });
+
+      if (!openRouterResponse.ok) {
+        const errorData = await openRouterResponse.text();
+        return NextResponse.json(
+          { error: `OpenRouter API error (${openRouterResponse.status}): ${errorData}` },
+          { status: openRouterResponse.status }
+        );
+      }
+
+      const openRouterData = await openRouterResponse.json();
+      const rawContent = openRouterData.choices?.[0]?.message?.content;
+
+      if (!rawContent) {
+        return NextResponse.json(
+          { error: "OpenRouter no devolvió contenido en la respuesta." },
+          { status: 500 }
+        );
+      }
+
+      const parsedData = extractAndParseJson(rawContent);
+      return NextResponse.json(parsedData);
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // RAMA B: GOOGLE AI STUDIO (Gemini Directo)
+    // ─────────────────────────────────────────────────────────────
+    const apiKey =
+      clientApiKey && clientApiKey.trim().length > 0
+        ? clientApiKey.trim()
+        : process.env.GEMINI_API_KEY ||
+          process.env.GOOGLE_API_KEY ||
+          process.env.NEXT_PUBLIC_GEMINI_API_KEY ||
+          "";
+
+    if (!apiKey) {
+      return NextResponse.json(
+        {
+          error:
+            "API Key de Google AI no configurada. Ingrésala en el Navigation Drawer (menú superior derecho).",
+        },
+        { status: 400 }
+      );
+    }
+
     let activeModel = model || "gemini-3.6-flash";
     if (activeModel.includes("1.5") || activeModel.includes("2.0") || activeModel.includes("2.5")) {
       activeModel = "gemini-3.6-flash";
@@ -181,7 +277,7 @@ El JSON debe tener la siguiente estructura exacta:
       );
     }
 
-    const parsedData = JSON.parse(rawJson);
+    const parsedData = extractAndParseJson(rawJson);
     return NextResponse.json(parsedData);
   } catch (err: any) {
     return NextResponse.json(
@@ -190,3 +286,4 @@ El JSON debe tener la siguiente estructura exacta:
     );
   }
 }
+
