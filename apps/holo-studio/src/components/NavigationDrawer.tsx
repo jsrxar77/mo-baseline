@@ -15,6 +15,7 @@ import {
   Zap,
 } from "lucide-react";
 import { HOLO_THEMES } from "../styles/themes";
+import { GOOGLE_MODELS, OPENROUTER_MODELS } from "../lib/models";
 
 export type StudioTab = "strategy" | "script" | "audio" | "render";
 
@@ -278,9 +279,11 @@ export function NavigationDrawer({
                     onChange={(e) => onLlmModelChange(e.target.value)}
                     className="w-full text-xs font-mono px-2 py-1 bg-black/40 border border-white/10 rounded text-slate-300 focus:outline-none cursor-pointer"
                   >
-                    <option value="gemini-3.6-flash">gemini-3.6-flash (Recomendado Gratuito)</option>
-                    <option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite</option>
-                    <option value="gemini-3.1-pro-preview">gemini-3.1-pro-preview</option>
+                    {GOOGLE_MODELS.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
               ) : (
@@ -311,13 +314,11 @@ export function NavigationDrawer({
                     onChange={(e) => onLlmModelChange(e.target.value)}
                     className="w-full text-xs font-mono px-2 py-1 bg-black/40 border border-white/10 rounded text-slate-300 focus:outline-none cursor-pointer"
                   >
-                    <option value="openrouter/auto">⚡ openrouter/auto (Router Libre Automático)</option>
-                    <option value="meta-llama/llama-3.3-70b-instruct:free">🦙 Llama 3.3 70B (:free)</option>
-                    <option value="deepseek/deepseek-r1:free">🧠 DeepSeek R1 Razonamiento (:free)</option>
-                    <option value="deepseek/deepseek-chat:free">⚡ DeepSeek V3 Chat (:free)</option>
-                    <option value="google/gemini-2.0-flash-exp:free">✨ Gemini 2.0 Flash Exp (:free)</option>
-                    <option value="qwen/qwen-2.5-72b-instruct:free">🌐 Qwen 2.5 72B (:free)</option>
-                    <option value="mistralai/mistral-7b-instruct:free">🌪️ Mistral 7B (:free)</option>
+                    {OPENROUTER_MODELS.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
               )}

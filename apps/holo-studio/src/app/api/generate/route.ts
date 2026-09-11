@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { OPENROUTER_FREE_FALLBACK_CHAIN } from "@/lib/models";
 
 function extractAndParseJson(text: string): any {
   let cleaned = text.trim();
@@ -168,7 +169,38 @@ El JSON debe tener la siguiente estructura exacta:
         );
       }
 
-      const activeModel = model || "openrouter/auto";
+      const requestedModel = (model || "openrouter/auto").trim();
+
+      // Guardrail de Seguridad: Solo permitir modelos con sufijo :free o el router automático
+      const isAllowedFreeModel =
+        requestedModel === "openrouter/auto" ||
+        requestedModel.endsWith(":free") ||
+        OPENROUTER_FREE_FALLBACK_CHAIN.includes(requestedModel as any);
+
+      if (!isAllowedFreeModel) {
+        return NextResponse.json(
+          {
+            error: `El modelo '${requestedModel}' no está en la lista de costo $0. Por seguridad, Holo Studio solo permite modelos con sufijo ':free' o 'openrouter/auto'.`,
+          },
+          { status: 400 }
+        );
+      }
+
+      // Si el modelo es openrouter/auto, usamos la cadena de fallbacks gratuitos del proyecto
+      const openRouterPayload: any = {
+        messages: [
+          { role: "system", content: systemInstruction },
+          { role: "user", content: userPrompt },
+        ],
+        temperature: 0.7,
+      };
+
+      if (requestedModel === "openrouter/auto") {
+        openRouterPayload.models = OPENROUTER_FREE_FALLBACK_CHAIN;
+        openRouterPayload.route = "fallback";
+      } else {
+        openRouterPayload.model = requestedModel;
+      }
 
       const openRouterResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
@@ -178,14 +210,7 @@ El JSON debe tener la siguiente estructura exacta:
           "HTTP-Referer": "http://localhost:3000",
           "X-Title": "Holo Studio Direct Response",
         },
-        body: JSON.stringify({
-          model: activeModel,
-          messages: [
-            { role: "system", content: systemInstruction },
-            { role: "user", content: userPrompt },
-          ],
-          temperature: 0.7,
-        }),
+        body: JSON.stringify(openRouterPayload),
       });
 
       if (!openRouterResponse.ok) {
