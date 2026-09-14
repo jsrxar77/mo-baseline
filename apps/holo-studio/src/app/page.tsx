@@ -8,6 +8,7 @@ import {
   Mic,
   Video,
   ChevronRight,
+  ChevronLeft,
   Play,
   Download,
   AlertCircle,
@@ -16,17 +17,23 @@ import {
   RefreshCw,
   Library,
   RotateCcw,
+  Image as ImageIcon,
+  Loader2,
+  FolderArchive,
+  Volume2,
+  Pause,
+  BookOpen,
 } from "lucide-react";
 import { NavigationDrawer, StudioTab } from "../components/NavigationDrawer";
 import { HOLO_THEMES, DEFAULT_THEME_KEY } from "../styles/themes";
 import { PresetsManagerTab } from "../components/PresetsManagerTab";
 import type { Preset, Angle } from "../lib/presets";
 
-// Tipo extendido para tab activa (incluye la nueva tab)
-type AppTab = StudioTab | "library";
+// Tipo para tab activa del pipeline
+type AppTab = StudioTab;
 
 export default function HoloStudioPage() {
-  const [activeTab, setActiveTab] = useState<AppTab>("strategy");
+  const [activeTab, setActiveTab] = useState<AppTab>("presets");
   const [currentTheme, setCurrentTheme] = useState<string>(DEFAULT_THEME_KEY);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -69,6 +76,18 @@ export default function HoloStudioPage() {
   const [error, setError] = useState<string | null>(null);
   const [packageData, setPackageData] = useState<any | null>(null);
   const [selectedHookIdx, setSelectedHookIdx] = useState(0);
+
+  // Estado de Generación Visual Local con ComfyUI
+  const [comfyGeneratingIdx, setComfyGeneratingIdx] = useState<number | null>(null);
+  const [comfyImages, setComfyImages] = useState<Record<number, string>>({});
+  const [exportingDrift, setExportingDrift] = useState(false);
+
+  // Estado de Síntesis Vocal Neuronal (Edge TTS - Buenos Aires)
+  const [selectedVoice, setSelectedVoice] = useState("es-AR-TomasNeural");
+  const [voicePacing, setVoicePacing] = useState("+5%");
+  const [loadingAudio, setLoadingAudio] = useState(false);
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
 
   // Carga de datos desde API al montar
   const fetchLibrary = useCallback(async () => {
@@ -180,13 +199,135 @@ export default function HoloStudioPage() {
     }
   };
 
+  // Disparar generación de imagen con ComfyUI local
+  const handleGenerateComfyImage = async (sceneIdx: number, promptText: string) => {
+    if (!promptText) return;
+    setComfyGeneratingIdx(sceneIdx);
+    try {
+      const res = await fetch("/api/comfy/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: promptText }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Fallo al generar imagen con ComfyUI.");
+      }
+      setComfyImages((prev) => ({ ...prev, [sceneIdx]: data.image_url }));
+    } catch (err: any) {
+      alert(`[ComfyUI Error]: ${err.message}`);
+    } finally {
+      setComfyGeneratingIdx(null);
+    }
+  };
+
+  // Reproducir muestra de locución neuronal argentina con Edge TTS
+  const handlePlayTtsSample = async () => {
+    if (isPlayingAudio && currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      setIsPlayingAudio(false);
+      return;
+    }
+
+    let textToSpeak = packageData?.matrix_scenes
+      ?.map((s: any) => s.voiceover)
+      .filter(Boolean)
+      .join(". ");
+
+    if (!textToSpeak) {
+      textToSpeak = `Che, mirá este video. Si estás buscando ${productName || "una solución real"}, esto te va a cambiar el día por completo.`;
+    }
+
+    setLoadingAudio(true);
+    try {
+      const res = await fetch("/api/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: textToSpeak,
+          voice: selectedVoice,
+          rate: voicePacing,
+        }),
+      });
+
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.error || "Fallo en la síntesis vocal neuronal.");
+      }
+
+      const blob = await res.blob();
+      const audioUrl = URL.createObjectURL(blob);
+      const audio = new Audio(audioUrl);
+      setCurrentAudio(audio);
+
+      audio.onended = () => {
+        setIsPlayingAudio(false);
+        URL.revokeObjectURL(audioUrl);
+      };
+
+      audio.onerror = () => {
+        setIsPlayingAudio(false);
+        URL.revokeObjectURL(audioUrl);
+        alert("Error al reproducir el flujo de audio.");
+      };
+
+      await audio.play();
+      setIsPlayingAudio(true);
+    } catch (err: any) {
+      alert(`[Error TTS]: ${err.message}`);
+    } finally {
+      setLoadingAudio(false);
+    }
+  };
+
+  // Exportar paquete multipista desacoplado para Drift
+  const handleExportDrift = async () => {
+    if (!packageData?.matrix_scenes || packageData.matrix_scenes.length === 0) {
+      alert("Primero debes generar un guion en la pestaña de Estrategia para exportar a Drift.");
+      return;
+    }
+    setExportingDrift(true);
+    try {
+      const res = await fetch("/api/export/drift", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productName: productName || "DirectResponse_Video",
+          scenes: packageData.matrix_scenes,
+          comfyImages,
+          voice: selectedVoice,
+          rate: voicePacing,
+        }),
+      });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || "Error en el servidor al compilar el proyecto para Drift");
+      }
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      const cleanName = (productName || "Anuncio").replace(/[^a-zA-Z0-9_-]/g, "_");
+      link.download = `${cleanName}_Drift_Bundle.drift`;
+      document.body.appendChild(link);
+      link.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+    } catch (err: any) {
+      alert(`[Error Drift Export]: ${err.message}`);
+    } finally {
+      setExportingDrift(false);
+    }
+  };
+
   return (
     <main className="min-h-screen flex flex-col transition-colors duration-200">
       {/* ── Navigation Drawer (ANCLADO A LA DERECHA) ── */}
       <NavigationDrawer
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        activeTab={(activeTab === "library" ? "strategy" : activeTab) as StudioTab}
+        activeTab={activeTab}
         onTabChange={(t: StudioTab) => setActiveTab(t)}
         currentTheme={currentTheme}
         onThemeChange={handleThemeChange}
@@ -205,7 +346,7 @@ export default function HoloStudioPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
           {/* ── LEFT: Brand ── */}
           <button
-            onClick={() => setActiveTab("strategy")}
+            onClick={() => setActiveTab("presets")}
             className="flex flex-col text-left hover:opacity-80 transition-opacity cursor-pointer"
           >
             <span className="font-bold tracking-tight text-base sm:text-lg leading-tight font-mono text-[#F8F8F2]">
@@ -218,28 +359,34 @@ export default function HoloStudioPage() {
 
           {/* ── CENTER: Tab indicator pill ── */}
           <div className="hidden md:flex items-center theme-input px-3 py-1.5 gap-2 font-mono">
-            {activeTab === "strategy" && (
+            {activeTab === "presets" && (
               <>
-                <Layers className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-xs font-semibold">1. Estrategia &amp; Producto</span>
+                <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
+                <span className="text-xs font-semibold">0. Presets &amp; Ángulos</span>
               </>
             )}
             {activeTab === "script" && (
               <>
                 <Sparkles className="w-3.5 h-3.5 theme-text-accent" />
-                <span className="text-xs font-semibold">2. Guion Canonico (4 Col)</span>
+                <span className="text-xs font-semibold">1. Guion &amp; Estrategia</span>
               </>
             )}
             {activeTab === "audio" && (
               <>
-                <Mic className="w-3.5 h-3.5 theme-text-amber" />
-                <span className="text-xs font-semibold">3. Audio &amp; Storyboard</span>
+                <Volume2 className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="text-xs font-semibold">2. Locución &amp; Audio</span>
+              </>
+            )}
+            {activeTab === "visuals" && (
+              <>
+                <ImageIcon className="w-3.5 h-3.5 text-pink-400" />
+                <span className="text-xs font-semibold">3. Storyboard &amp; Imágenes</span>
               </>
             )}
             {activeTab === "render" && (
               <>
-                <Video className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-xs font-semibold">4. Render &amp; Exportacion</span>
+                <Video className="w-3.5 h-3.5 text-amber-400" />
+                <span className="text-xs font-semibold">4. Ensamblado &amp; Drift</span>
               </>
             )}
           </div>
@@ -300,14 +447,14 @@ export default function HoloStudioPage() {
           </div>
         )}
 
-        {/* ── NAVEGACION DE PESTANAS ── */}
+        {/* ── NAVEGACION DE PESTANAS (5 PASOS DESACOPLADOS) ── */}
         <div className="flex border-b border-white/10 mb-8 overflow-x-auto gap-2">
           {([
-            { id: "strategy", label: "1. Estrategia & Producto" },
-            { id: "script", label: "2. Guion Canónico (4 Col)" },
-            { id: "audio", label: "3. Audio & Storyboard" },
+            { id: "presets", label: "0. Presets & Ángulos" },
+            { id: "script", label: "1. Guion & Estrategia" },
+            { id: "audio", label: "2. Locución & Audio" },
+            { id: "visuals", label: "3. Storyboard & Imágenes" },
             { id: "render", label: "4. Render & Exportación" },
-            { id: "library", label: "5. Mis Presets & Ángulos" },
           ] as { id: AppTab; label: string }[]).map((tab) => (
             <button
               key={tab.id}
@@ -323,18 +470,39 @@ export default function HoloStudioPage() {
           ))}
         </div>
 
-        {/* ── TAB 5: BIBLIOTECA DE PRESETS & ÁNGULOS ── */}
-        {activeTab === "library" && (
-          <PresetsManagerTab
-            onUsePreset={(p) => {
-              loadFromPreset(p);
-              setActiveTab("strategy");
-            }}
-          />
+        {/* ── PASO 0: PRESETS & ÁNGULOS (CONFIGURACIÓN BASE) ── */}
+        {activeTab === "presets" && (
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 theme-card border-emerald-400/20">
+              <div>
+                <h2 className="font-mono text-sm font-bold text-[#F8F8F2] flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-emerald-400" />
+                  <span>Paso 0: Presets de Producto &amp; Ángulos de Respuesta Directa</span>
+                </h2>
+                <p className="font-mono text-xs theme-text-muted mt-0.5">
+                  Selecciona un producto para cargar sus dolores, mecanismo y oferta, o define nuevos ángulos de venta antes de generar tu guion.
+                </p>
+              </div>
+              <button
+                onClick={() => setActiveTab("script")}
+                className="px-5 py-2.5 theme-btn-primary font-mono text-xs font-bold uppercase flex items-center gap-2 shrink-0 self-start sm:self-auto cursor-pointer"
+              >
+                <span>Continuar a Guion &amp; Estrategia</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            <PresetsManagerTab
+              onUsePreset={(p) => {
+                loadFromPreset(p);
+                setActiveTab("script");
+              }}
+            />
+          </div>
         )}
 
-        {/* ── TAB 1: ESTRATEGIA & PRODUCTO ── */}
-        {activeTab === "strategy" && (
+        {/* ── PASO 1: GUION & ESTRATEGIA (COPYWRITING CANÓNICO) ── */}
+        {activeTab === "script" && (
           <div className="space-y-6">
 
             {/* Chip de preset activo */}
@@ -348,11 +516,11 @@ export default function HoloStudioPage() {
                   — {editedFields.size > 0 ? `${editedFields.size} campo(s) editado(s)` : "Preset cargado"}
                 </span>
                 <button
-                  onClick={() => { setActiveTab("library"); }}
-                  className="ml-auto text-[10px] font-mono theme-text-muted hover:text-white cursor-pointer flex items-center gap-1"
+                  onClick={() => { setActiveTab("presets"); }}
+                  className="ml-auto text-[10px] font-mono text-emerald-400 hover:text-emerald-300 cursor-pointer flex items-center gap-1"
                 >
-                  <Library className="w-3 h-3" />
-                  Cambiar
+                  <BookOpen className="w-3 h-3" />
+                  Cambiar en Paso 0
                 </button>
               </div>
             )}
@@ -583,26 +751,21 @@ export default function HoloStudioPage() {
                 )}
               </button>
             </div>
-          </div>
-        )}
 
-        {/* ── TAB 2: GUION CANONICO (4 COL) ── */}
-        {activeTab === "script" && (
-          <div className="space-y-6">
-            {!packageData ? (
-              <div className="theme-card p-8 text-center space-y-3">
-                <Sparkles className="w-8 h-8 theme-text-accent mx-auto" />
-                <p className="font-mono text-xs theme-text-muted">
-                  Aun no has generado ningun paquete creativo. Completa los datos en la etapa 1.
+            {/* Mensaje informativo si aún no se ha generado */}
+            {!packageData && (
+              <div className="p-4 theme-card border-white/5 bg-white/[0.02] text-center space-y-1">
+                <span className="font-mono text-xs text-slate-300 block">
+                  👆 Revisa los datos de tu producto arriba y haz clic en &quot;Generar Matriz Canónica &amp; 3 Hooks DCT&quot;.
+                </span>
+                <p className="font-mono text-[11px] theme-text-muted">
+                  El motor de IA creará los 3 ganchos DCT (Dolor, Quiebre de Creencia y Demo) junto a la matriz técnica de 4 columnas de 30 segundos.
                 </p>
-                <button
-                  onClick={() => setActiveTab("strategy")}
-                  className="px-4 py-2 theme-btn-primary font-mono text-xs font-bold"
-                >
-                  Ir a Estrategia
-                </button>
               </div>
-            ) : (
+            )}
+
+            {/* Si ya hay guion generado: 3 Hooks DCT, Matriz Canónica y Guion Continuo */}
+            {packageData && (
               <>
                 {/* 3 Hooks DCT */}
                 <div>
@@ -717,74 +880,279 @@ export default function HoloStudioPage() {
           </div>
         )}
 
-        {/* ── TAB 3: AUDIO & STORYBOARD ── */}
+        {/* ── PASO 2: LOCUCIÓN & AUDIO (EDGE TTS • BUENOS AIRES) ── */}
         {activeTab === "audio" && (
           <div className="space-y-6">
             <div className="theme-card p-6 space-y-4">
-              <h3 className="font-mono text-sm font-bold text-[#F8F8F2]">
-                Sintesis Vocal Neuronal (Costo $0)
-              </h3>
-              <p className="font-mono text-xs theme-text-muted">
-                Locucion directa en espanol con cadencia acelerada (+5% / +10%) para maximizar la retencion (Hold Rate &gt;= 20%).
-              </p>
-
-              <div className="p-4 theme-input flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
-                  <span className="font-mono text-xs font-bold block text-emerald-400">
-                    Voz: Dalia Neural (Latam Dinamica)
-                  </span>
-                  <span className="font-mono text-[11px] theme-text-muted">
-                    Formato: MP3 44.1kHz • Ritmo: +5% Pacing
+                  <h3 className="font-mono text-sm font-bold text-[#F8F8F2] flex items-center gap-2">
+                    <Volume2 className="w-4 h-4 text-emerald-400" />
+                    <span>Paso 2: Locución Neuronal &amp; Pista de Audio (Edge TTS • Buenos Aires)</span>
+                  </h3>
+                  <p className="font-mono text-xs theme-text-muted mt-0.5">
+                    Motor neuronal con acento nativo rioplatense y cadencia acelerada para maximizar la retención publicitaria (Hold Rate &gt;= 20%).
+                  </p>
+                </div>
+                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 self-start sm:self-auto">
+                  ● Acento: Buenos Aires, AR (Costo $0)
+                </span>
+              </div>
+
+              <div className="p-4 theme-input flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 flex-1">
+                  <div>
+                    <label className="text-[10px] font-mono theme-text-muted uppercase block mb-1">
+                      Locutor / Voz Porteña
+                    </label>
+                    <select
+                      value={selectedVoice}
+                      onChange={(e) => setSelectedVoice(e.target.value)}
+                      className="w-full p-2 theme-card text-xs font-mono text-emerald-400 border border-white/10 rounded focus:outline-none"
+                    >
+                      <option value="es-AR-TomasNeural">Tomás Neural (Buenos Aires • Masculina)</option>
+                      <option value="es-AR-ElenaNeural">Elena Neural (Buenos Aires • Femenina)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-mono theme-text-muted uppercase block mb-1">
+                      Ritmo / Cadencia de Pacing
+                    </label>
+                    <select
+                      value={voicePacing}
+                      onChange={(e) => setVoicePacing(e.target.value)}
+                      className="w-full p-2 theme-card text-xs font-mono text-slate-200 border border-white/10 rounded focus:outline-none"
+                    >
+                      <option value="+5%">+5% Pacing (Dinámico y Enérgico)</option>
+                      <option value="+10%">+10% Pacing (Acelerado TikTok/Reels)</option>
+                      <option value="+0%">Ritmo Natural (0% Pacing)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex items-center pt-2 md:pt-0">
+                  <button
+                    onClick={handlePlayTtsSample}
+                    disabled={loadingAudio}
+                    className={`px-5 py-2.5 font-mono text-xs font-bold uppercase flex items-center justify-center gap-2 rounded transition-all cursor-pointer ${
+                      isPlayingAudio
+                        ? "bg-amber-600 hover:bg-amber-500 text-white shadow-lg shadow-amber-950/40"
+                        : "theme-btn-primary"
+                    }`}
+                  >
+                    {loadingAudio ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>Sintetizando...</span>
+                      </>
+                    ) : isPlayingAudio ? (
+                      <>
+                        <Pause className="w-3.5 h-3.5" />
+                        <span>Detener Reproducción</span>
+                      </>
+                    ) : (
+                      <>
+                        <Play className="w-3.5 h-3.5" />
+                        <span>Escuchar Muestra Porteña</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Desglose de Locución Escena por Escena */}
+            {packageData?.matrix_scenes ? (
+              <div className="theme-card p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-mono text-sm font-bold text-[#F8F8F2] flex items-center gap-2">
+                    <Mic className="w-4 h-4 text-emerald-400" />
+                    <span>Desglose de Locución por Escenas (Pista de Audio Desacoplada)</span>
+                  </h3>
+                  <span className="text-[10px] font-mono text-emerald-400/80 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                    {packageData.matrix_scenes.length} Escenas
                   </span>
                 </div>
-                <button
-                  onClick={() => alert("Audio generado para el guion seleccionado.")}
-                  className="px-4 py-2 theme-btn-primary font-mono text-xs font-bold flex items-center gap-2 self-start sm:self-auto cursor-pointer"
-                >
-                  <Play className="w-3.5 h-3.5" />
-                  <span>Reproducir Muestra</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Storyboard Prompts */}
-            <div className="space-y-3">
-              <h3 className="font-mono text-sm font-bold text-[#F8F8F2]">
-                Storyboard Visual 9:16 (Imagen 3 Prompts)
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {packageData?.matrix_scenes?.map((sc: any, idx: number) => (
-                  <div key={idx} className="theme-card p-4 space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="font-mono text-xs font-bold text-emerald-400">
-                        Escena {idx + 1}
-                      </span>
-                      <span className="font-mono text-[10px] theme-text-muted">
-                        {sc.timestamp}
+                <div className="space-y-3">
+                  {packageData.matrix_scenes.map((sc: any, idx: number) => (
+                    <div
+                      key={idx}
+                      className="p-3 theme-input flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="font-mono text-xs font-bold text-emerald-400 px-2 py-1 bg-black/40 rounded border border-white/5 whitespace-nowrap">
+                          {sc.timestamp}
+                        </span>
+                        <span className="font-mono text-xs text-slate-200">
+                          &quot;{sc.voiceover}&quot;
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-mono theme-text-muted shrink-0">
+                        {sc.segment || `Escena ${idx + 1}`}
                       </span>
                     </div>
-                    <p className="text-[11px] font-mono text-slate-300 line-clamp-3">
-                      {sc.image_prompt || "Vertical photorealistic shot 9:16 for direct response..."}
-                    </p>
-                    <div className="pt-2 border-t border-white/5">
-                      <span className="text-[10px] font-mono theme-text-accent block truncate">
-                        {sc.screen_text}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="theme-card p-6 text-center space-y-2">
+                <p className="font-mono text-xs theme-text-muted">
+                  Aún no has generado ningún guion. Puedes probar la voz con el botón de muestra arriba o volver al Paso 1 para crear tu guion.
+                </p>
+              </div>
+            )}
 
-            <div className="pt-2 flex justify-end">
+            {/* Navegación inferior Paso 2 */}
+            <div className="pt-2 flex justify-between items-center">
               <button
-                onClick={() => setActiveTab("render")}
-                className="px-6 py-2.5 theme-btn-primary font-mono text-xs font-bold uppercase flex items-center gap-2"
+                onClick={() => setActiveTab("script")}
+                className="px-4 py-2 theme-btn-secondary font-mono text-xs font-bold uppercase flex items-center gap-2 cursor-pointer"
               >
-                <span>Continuar a Render 9:16</span>
+                <ChevronLeft className="w-4 h-4" />
+                <span>Volver a Guion</span>
+              </button>
+              <button
+                onClick={() => setActiveTab("visuals")}
+                className="px-6 py-2.5 theme-btn-primary font-mono text-xs font-bold uppercase flex items-center gap-2 cursor-pointer"
+              >
+                <span>Continuar a Storyboard &amp; Imágenes</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
+          </div>
+        )}
+
+        {/* ── PASO 3: STORYBOARD & RENDER DE IMÁGENES (COMFYUI) ── */}
+        {activeTab === "visuals" && (
+          <div className="space-y-6">
+            <div className="theme-card p-6 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <h3 className="font-mono text-sm font-bold text-[#F8F8F2] flex items-center gap-2">
+                    <ImageIcon className="w-4 h-4 text-emerald-400" />
+                    <span>Paso 3: Storyboard Visual 9:16 (ComfyUI B-Roll)</span>
+                  </h3>
+                  <p className="font-mono text-xs theme-text-muted mt-0.5">
+                    Generación de planos visuales verticales con Stable Diffusion (DreamShaper 8) ejecutándose en Metal/MPS de tu Mac.
+                  </p>
+                </div>
+                <span className="text-[10px] font-mono text-emerald-400/80 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 self-start sm:self-auto">
+                  ● Engine: DreamShaper 8 (Local MPS)
+                </span>
+              </div>
+            </div>
+
+            {!packageData ? (
+              <div className="theme-card p-8 text-center space-y-3">
+                <ImageIcon className="w-8 h-8 text-emerald-400/50 mx-auto" />
+                <p className="font-mono text-xs theme-text-muted">
+                  Aún no has generado un guion con escenas para ilustrar en el Storyboard.
+                </p>
+                <button
+                  onClick={() => setActiveTab("script")}
+                  className="px-4 py-2 theme-btn-primary font-mono text-xs font-bold uppercase"
+                >
+                  Ir a Paso 1 (Guion &amp; Estrategia)
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {packageData?.matrix_scenes?.map((sc: any, idx: number) => {
+                    const prompt = sc.image_prompt || "Vertical photorealistic shot 9:16 for direct response commercial...";
+                    const generatedImg = comfyImages[idx];
+                    const isGenerating = comfyGeneratingIdx === idx;
+
+                    return (
+                      <div key={idx} className="theme-card p-4 space-y-3 flex flex-col justify-between">
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="font-mono text-xs font-bold text-emerald-400">
+                              Escena {idx + 1}
+                            </span>
+                            <span className="font-mono text-[10px] theme-text-muted">
+                              {sc.timestamp}
+                            </span>
+                          </div>
+
+                          {/* Imagen generada o placeholder */}
+                          {generatedImg ? (
+                            <div className="relative aspect-[9/16] rounded-lg overflow-hidden border border-emerald-500/30 bg-black/40 group">
+                              <img
+                                src={generatedImg}
+                                alt={`Escena ${idx + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                              <div className="absolute top-2 right-2 bg-emerald-500 text-black text-[9px] font-mono font-bold px-1.5 py-0.5 rounded">
+                                COMFYUI
+                              </div>
+                            </div>
+                          ) : null}
+
+                          <p className="text-[11px] font-mono text-slate-300 line-clamp-3">
+                            {prompt}
+                          </p>
+                        </div>
+
+                        <div className="pt-2 border-t border-white/5 space-y-2">
+                          <span className="text-[10px] font-mono theme-text-accent block truncate">
+                            {sc.screen_text}
+                          </span>
+
+                          <button
+                            onClick={() => handleGenerateComfyImage(idx, prompt)}
+                            disabled={isGenerating || comfyGeneratingIdx !== null}
+                            className={`w-full py-1.5 px-2.5 rounded font-mono text-[10px] font-bold uppercase transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                              isGenerating
+                                ? "bg-amber-500/20 text-amber-300 border border-amber-500/30 cursor-wait"
+                                : generatedImg
+                                ? "bg-white/5 hover:bg-white/10 text-emerald-400 border border-emerald-500/20"
+                                : "bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-sm"
+                            }`}
+                          >
+                            {isGenerating ? (
+                              <>
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                                <span>Generando en ComfyUI...</span>
+                              </>
+                            ) : generatedImg ? (
+                              <>
+                                <RefreshCw className="w-3 h-3" />
+                                <span>Regenerar B-Roll</span>
+                              </>
+                            ) : (
+                              <>
+                                <ImageIcon className="w-3 h-3" />
+                                <span>Generar con ComfyUI</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Navegación inferior Paso 3 */}
+                <div className="pt-2 flex justify-between items-center">
+                  <button
+                    onClick={() => setActiveTab("audio")}
+                    className="px-4 py-2 theme-btn-secondary font-mono text-xs font-bold uppercase flex items-center gap-2 cursor-pointer"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    <span>Volver a Locución</span>
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("render")}
+                    className="px-6 py-2.5 theme-btn-primary font-mono text-xs font-bold uppercase flex items-center gap-2 cursor-pointer"
+                  >
+                    <span>Continuar a Render &amp; Exportación</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -837,6 +1205,53 @@ export default function HoloStudioPage() {
                     <Download className="w-4 h-4" />
                     <span>Descargar Video (.mp4)</span>
                   </button>
+
+                  {/* ── Exportación Multipista Desacoplada para Drift ── */}
+                  <div className="pt-4 mt-2 border-t border-white/10 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                        <FolderArchive className="w-3.5 h-3.5" />
+                        <span>Proyecto Desacoplado para Drift</span>
+                      </span>
+                      <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                        Open Source NLE
+                      </span>
+                    </div>
+                    <p className="font-mono text-[11px] theme-text-muted leading-relaxed">
+                      Exporta un paquete <strong className="text-slate-200">.drift</strong> multipista con: audio de locución, B-Roll de ComfyUI y subtítulos editables (desacoplados, sin quemar), listo para abrir en Drift o sincronizar vía Drift MCP.
+                    </p>
+                    <button
+                      onClick={handleExportDrift}
+                      disabled={exportingDrift}
+                      className={`w-full py-3 font-mono text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer rounded transition-all ${
+                        exportingDrift
+                          ? "bg-slate-700 text-slate-400 cursor-not-allowed"
+                          : "bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:from-emerald-500 hover:to-teal-400 text-white shadow-lg shadow-emerald-950/40"
+                      }`}
+                    >
+                      {exportingDrift ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span>Empaquetando Assets para Drift...</span>
+                        </>
+                      ) : (
+                        <>
+                          <FolderArchive className="w-4 h-4" />
+                          <span>Exportar Paquete para Drift (.drift)</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  <div className="pt-2 flex justify-start">
+                    <button
+                      onClick={() => setActiveTab("visuals")}
+                      className="px-4 py-2 theme-btn-secondary font-mono text-xs font-bold uppercase flex items-center gap-2 cursor-pointer"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                      <span>Volver a Storyboard &amp; Imágenes</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

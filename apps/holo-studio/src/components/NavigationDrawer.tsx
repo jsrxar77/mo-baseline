@@ -13,11 +13,13 @@ import {
   Moon,
   ShieldCheck,
   Zap,
+  BookOpen,
+  Image as ImageIcon,
 } from "lucide-react";
 import { HOLO_THEMES } from "../styles/themes";
 import { GOOGLE_MODELS, OPENROUTER_MODELS } from "../lib/models";
 
-export type StudioTab = "strategy" | "script" | "audio" | "render";
+export type StudioTab = "presets" | "script" | "audio" | "visuals" | "render";
 
 interface NavItem {
   id: StudioTab;
@@ -28,28 +30,34 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   {
-    id: "strategy",
-    label: "1. Estrategia & Producto",
-    icon: <Layers className="w-4 h-4" />,
-    description: "Definicion del producto, angulo directo, dolores y oferta",
+    id: "presets",
+    label: "0. Presets & Ángulos",
+    icon: <BookOpen className="w-4 h-4" />,
+    description: "Biblioteca de productos, dolores, mecanismos y ángulos directos",
   },
   {
     id: "script",
-    label: "2. Guion Canonico (4 Col)",
+    label: "1. Guion & Estrategia",
     icon: <Sparkles className="w-4 h-4" />,
-    description: "Matriz de 30s + 3 Hooks DCT para testeo de retencion",
+    description: "Definición del producto, 3 Hooks DCT y Matriz Canónica (4 Col)",
   },
   {
     id: "audio",
-    label: "3. Audio & Storyboard",
+    label: "2. Locución & Audio",
     icon: <Mic className="w-4 h-4" />,
-    description: "Locucion neuronal con cadencia acelerada y prompts 9:16",
+    description: "Síntesis de voz neuronal (Buenos Aires: Tomás/Elena) y ritmo",
+  },
+  {
+    id: "visuals",
+    label: "3. Storyboard & Imágenes",
+    icon: <ImageIcon className="w-4 h-4" />,
+    description: "Generación B-Roll 9:16 local con ComfyUI (DreamShaper 8)",
   },
   {
     id: "render",
-    label: "4. Render & Exportacion",
+    label: "4. Render & Exportación",
     icon: <Video className="w-4 h-4" />,
-    description: "Montaje vertical 1080x1920 con Ken Burns y exportacion",
+    description: "Montaje vertical 1080x1920 y exportación desacoplada para Drift",
   },
 ];
 

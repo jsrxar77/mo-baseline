@@ -17,11 +17,18 @@
 
 ### 4. Creativos y Documentación Visual
 * `creative:generate-script`: Producción de guiones técnicos en matriz de 4 columnas.
-* `creative:holo-studio`: Suite Web local Next.js 14 / React 18 / Tailwind CSS (`apps/holo-studio/`, ejecutable vía `bin/holo-studio.sh`) con Google AI, Drawer lateral derecho, temas canónicos (Omarchy Tiling sin rojo), síntesis vocal neuronal y renderizado vertical 9:16.
+* `creative:holo-studio`: Suite Web local Next.js 14 / React 18 / Tailwind CSS (`apps/holo-studio/`, ejecutable vía `bin/holo-studio.sh`) con pipeline desacoplado en 5 pasos:
+  - **Paso 0 (Presets & Ángulos):** Biblioteca de configuraciones de producto y ángulos canónicos de respuesta directa.
+  - **Paso 1 (Guion & Estrategia):** Generador con Google AI Studio / OpenRouter, 3 Hooks DCT y matriz canónica de 4 columnas (30s).
+  - **Paso 2 (Locución & Audio):** Motor neuronal Microsoft Edge TTS con acento rioplatense (Buenos Aires, Tomás & Elena) y control de cadencia publicitaria.
+  - **Paso 3 (Storyboard & Imágenes):** Generación de B-Roll 9:16 con ComfyUI local Metal/MPS (DreamShaper 8).
+  - **Paso 4 (Ensamblado & Drift):** Renderizado vertical 1080x1920 (30 FPS, H.264/AAC) y exportador multipista desacoplado `.drift` para el editor open-source Drift y sincronización MCP.
 * `diagram:mermaid-standard`: Generación homogénea de diagramas en grises suaves (#F8FAFC/#F1F5F9/#E2E8F0), bordes slate y tipografía 100% negra (#0F172A), con escala estricta en cuadrantes (fontSize <= 11px) y ejes temporales.
 * **Skill Activa:** `direct-response-ads` (`.agent/skills/direct-response-ads/SKILL.md`).
 
-### 5. Configuración de Entorno y Protocolo MCP (`.agent/mcp_config.json`)
+### 5. Configuración de Entorno y Protocolo MCP (`.agents/mcp_config.json`)
+* `comfy-mcp`: Control e inspección de la instancia local de ComfyUI (puerto 8188) vía stdio (`comfy-cli`).
+* `comfy-cloud`: Conexión remota a la nube oficial de Comfy (`https://cloud.comfy.org/mcp`) para templates y ejecución GPU.
 * `meta-marketing-mcp`: Control de campañas, adsets, creativos y CAPI en Meta Ads.
 * `google-ads-mcp`: Mutaciones de Search/PMax y términos de búsqueda.
 * `google-merchant-mcp`: Diagnóstico de catálogo, errores y custom_labels.
@@ -29,3 +36,4 @@
 * `browser-automation-mcp`: Auditoría web y validación de marcado y tags vía Puppeteer.
 * `fetch-http-mcp`: Llamadas directas Graph API y microservicios server-side.
 * `ecommerce-database-mcp`: Extracción directa PostgreSQL de márgenes (COGS) y stock.
+

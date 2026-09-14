@@ -5,19 +5,85 @@ function extractAndParseJson(text: string): any {
   let cleaned = text.trim();
   // Remover etiquetas de razonamiento de modelos como DeepSeek R1 (<think>...</think>)
   cleaned = cleaned.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+
   // Quitar bloques markdown si el modelo los incluyó
-  if (cleaned.startsWith("```")) {
-    cleaned = cleaned.replace(/^```(?:json)?\s*/i, "");
-    cleaned = cleaned.replace(/\s*```$/i, "");
-    cleaned = cleaned.trim();
-  }
-  // Localizar el objeto JSON exterior { ... }
+  cleaned = cleaned.replace(/^```(?:json)?\s*/gi, "").replace(/\s*```$/gi, "").trim();
+
   const firstBrace = cleaned.indexOf("{");
-  const lastBrace = cleaned.lastIndexOf("}");
-  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-    cleaned = cleaned.substring(firstBrace, lastBrace + 1);
+  if (firstBrace === -1) {
+    throw new Error("No se encontró ningún objeto JSON válido en la respuesta del modelo.");
   }
-  return JSON.parse(cleaned);
+
+  // 1. Balancear llaves respetando strings y escapes para encontrar el cierre exacto del objeto raíz
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+  let rootEndIndex = -1;
+
+  for (let i = firstBrace; i < cleaned.length; i++) {
+    const char = cleaned[i];
+    if (escape) {
+      escape = false;
+      continue;
+    }
+    if (char === "\\") {
+      escape = true;
+      continue;
+    }
+    if (char === '"') {
+      inString = !inString;
+      continue;
+    }
+    if (!inString) {
+      if (char === "{") depth++;
+      else if (char === "}") {
+        depth--;
+        if (depth === 0) {
+          rootEndIndex = i;
+          break;
+        }
+      }
+    }
+  }
+
+  const cleanCandidate = (str: string) =>
+    str
+      .replace(/,\s*([\]}])/g, "$1") // Remueve trailing commas comunes de LLMs
+      .replace(/[\x00-\x09\x0B\x0C\x0E-\x1F]/g, ""); // Remueve caracteres de control inválidos
+
+  // Intento A: Con el cierre exacto del objeto raíz (descarta texto explicativo sobrante al final)
+  if (rootEndIndex !== -1) {
+    const candidate = cleaned.substring(firstBrace, rootEndIndex + 1);
+    try {
+      return JSON.parse(candidate);
+    } catch {
+      try {
+        return JSON.parse(cleanCandidate(candidate));
+      } catch {}
+    }
+  }
+
+  // Intento B: Probar hacia atrás desde cada '}' candidata
+  const braceIndices: number[] = [];
+  for (let i = cleaned.length - 1; i > firstBrace; i--) {
+    if (cleaned[i] === "}") {
+      braceIndices.push(i);
+    }
+  }
+
+  for (const endIdx of braceIndices) {
+    const sub = cleaned.substring(firstBrace, endIdx + 1);
+    try {
+      return JSON.parse(sub);
+    } catch {
+      try {
+        return JSON.parse(cleanCandidate(sub));
+      } catch {}
+    }
+  }
+
+  // Intento C: Parse directo del candidato limpio
+  return JSON.parse(cleanCandidate(cleaned.substring(firstBrace)));
 }
 
 export async function POST(req: NextRequest) {

@@ -14,17 +14,13 @@ export interface ModelOption {
 
 // ─────────────────────────────────────────────────────────────
 // LISTA ORDENADA DE FALLBACKS GRATUITOS PARA OPENROUTER
-// Cuando se usa "openrouter/auto", OpenRouter intentará estos
-// modelos en orden estricto. Si uno tiene rate-limit, salta al siguiente.
-// Todos terminan estrictamente en ':free' (Costo $0 / 1M tokens).
+// OpenRouter restringe el array 'models' a un máximo estricto de 3 ítems.
+// Seleccionamos los 3 modelos :free más potentes y activos del catálogo.
 // ─────────────────────────────────────────────────────────────
 export const OPENROUTER_FREE_FALLBACK_CHAIN = [
-  "meta-llama/llama-3.3-70b-instruct:free",
-  "deepseek/deepseek-r1:free",
-  "deepseek/deepseek-chat:free",
-  "google/gemini-2.0-flash-exp:free",
-  "qwen/qwen-2.5-72b-instruct:free",
-  "mistralai/mistral-7b-instruct:free",
+  "nvidia/nemotron-3-super-120b-a12b:free",
+  "google/gemma-4-31b-it:free",
+  "liquid/lfm-2.5-2.6b:free",
 ] as const;
 
 // Modelos seleccionables en el Navigation Drawer para OpenRouter
@@ -34,49 +30,28 @@ export const OPENROUTER_MODELS: ModelOption[] = [
     label: "⚡ Auto Fallback (Cadena Inteligente :free)",
     provider: "openrouter",
     isFree: true,
-    description: "Intenta Llama 3.3 70B -> DeepSeek R1 -> DeepSeek V3 -> Gemini 2.0 -> Qwen 2.5 sin interrupciones",
+    description: "Intenta Nemotron 120B -> Gemma 4 31B -> LFM 2.5 sin interrupciones",
   },
   {
-    id: "meta-llama/llama-3.3-70b-instruct:free",
-    label: "🦙 Meta Llama 3.3 70B (:free)",
+    id: "nvidia/nemotron-3-super-120b-a12b:free",
+    label: "🟢 NVIDIA Nemotron 3 Super 120B (:free)",
     provider: "openrouter",
     isFree: true,
-    description: "Modelo insignia de Meta, excelente para copy de performance",
+    description: "Modelo insignia de NVIDIA con 120B parámetros y razonamiento rápido",
   },
   {
-    id: "deepseek/deepseek-r1:free",
-    label: "🧠 DeepSeek R1 Razonamiento (:free)",
+    id: "google/gemma-4-31b-it:free",
+    label: "✨ Google Gemma 4 31B Instruct (:free)",
     provider: "openrouter",
     isFree: true,
-    description: "Modelo de razonamiento analítico para matrices complejas",
+    description: "Modelo instruct de 31B de Google de última generación",
   },
   {
-    id: "deepseek/deepseek-chat:free",
-    label: "⚡ DeepSeek V3 Chat (:free)",
+    id: "liquid/lfm-2.5-2.6b:free",
+    label: "💧 Liquid LFM 2.5 (:free)",
     provider: "openrouter",
     isFree: true,
-    description: "Alta velocidad y precisión en copywriting en español",
-  },
-  {
-    id: "google/gemini-2.0-flash-exp:free",
-    label: "✨ Google Gemini 2.0 Flash Exp (:free)",
-    provider: "openrouter",
-    isFree: true,
-    description: "Nueva generación multimodal de Google vía OpenRouter",
-  },
-  {
-    id: "qwen/qwen-2.5-72b-instruct:free",
-    label: "🌐 Qwen 2.5 72B Instruct (:free)",
-    provider: "openrouter",
-    isFree: true,
-    description: "72 mil millones de parámetros optimizados para instrucciones",
-  },
-  {
-    id: "mistralai/mistral-7b-instruct:free",
-    label: "🌪️ Mistral 7B Instruct (:free)",
-    provider: "openrouter",
-    isFree: true,
-    description: "Modelo ligero, rápido y confiable para hooks directos",
+    description: "Modelo ultra rápido y liviano para borradores inmediatos",
   },
 ];
 

@@ -1,5 +1,26 @@
 {
   "mcpServers": {
+    "drift-mcp": {
+      "command": "drift",
+      "args": ["--mcp-stdio"],
+      "env": {
+        "DRIFT_TOKEN": "${DRIFT_TOKEN}"
+      }
+    },
+    "comfy-mcp": {
+      "command": "uvx",
+      "args": ["comfy-mcp"],
+      "env": {
+        "COMFY_HOST": "127.0.0.1",
+        "COMFY_PORT": "8188"
+      }
+    },
+    "comfy-cloud": {
+      "url": "https://cloud.comfy.org/mcp",
+      "headers": {
+        "X-API-Key": "${COMFY_API_KEY}"
+      }
+    },
     "meta-marketing-mcp": {
       "command": "npx",
       "args": ["-y", "@anthropic-ai/meta-marketing-mcp-server"],
